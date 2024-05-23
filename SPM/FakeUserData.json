@@ -1,0 +1,62 @@
+[
+    {
+        "Username": "User1",
+        "PasswordHash": "3a7bK8R2P6",
+        "Email": "user1@example.com",
+        "DateOfBirth": "1990-05-15T00:00:00"
+    },
+    {
+        "Username": "User2",
+        "PasswordHash": "9x5A3r4B7F",
+        "Email": "user2@example.com",
+        "DateOfBirth": "1985-12-10T00:00:00"
+    },
+    {
+        "Username": "User3",
+        "PasswordHash": "2t8M6q1S9C",
+        "Email": "user3@example.com",
+        "DateOfBirth": "1998-08-20T00:00:00"
+    },
+    {
+        "Username": "User4",
+        "PasswordHash": "7v1P4e3G9J",
+        "Email": "user4@example.com",
+        "DateOfBirth": "1975-03-25T00:00:00"
+    },
+    {
+        "Username": "User5",
+        "PasswordHash": "4u9H3s2E8L",
+        "Email": "user5@example.com",
+        "DateOfBirth": "2000-11-05T00:00:00"
+    },
+    {
+        "Username": "User6",
+        "PasswordHash": "8w2O7f1I6M",
+        "Email": "user6@example.com",
+        "DateOfBirth": "1982-07-30T00:00:00"
+    },
+    {
+        "Username": "User7",
+        "PasswordHash": "6y3N5g2D9K",
+        "Email": "user7@example.com",
+        "DateOfBirth": "1995-09-12T00:00:00"
+    },
+    {
+        "Username": "User8",
+        "PasswordHash": "1z6L9h4T8A",
+        "Email": "user8@example.com",
+        "DateOfBirth": "1988-04-18T00:00:00"
+    },
+    {
+        "Username": "User9",
+        "PasswordHash": "5x4J1p3R7Q",
+        "Email": "user9@example.com",
+        "DateOfBirth": "1993-06-08T00:00:00"
+    },
+    {
+        "Username": "User10",
+        "PasswordHash": "0y9K6i2U5W",
+        "Email": "user10@example.com",
+        "DateOfBirth": "1979-02-22T00:00:00"
+    }
+]
