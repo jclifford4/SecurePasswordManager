@@ -1,0 +1,13 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "dotnet",
+            "task": "build j:\\dotnetProjects\\SPM\\SPM.csproj",
+            "file": "j:\\dotnetProjects\\SPM\\SPM.csproj",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "dotnet: build j:\\dotnetProjects\\SPM\\SPM.csproj"
+        }
+    ]
+}
