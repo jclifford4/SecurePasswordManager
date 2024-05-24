@@ -1,11 +1,13 @@
 using Xunit;
+using SPM;
 using UserRepository;
 using UserAccount;
 
-namespace UserRepositoryTests
+namespace SPM.Tests
 {
     public class UserRepositoryIntegrationTests
     {
+
 
         [Fact]
         public void CanOpenAndCloseConnection_ResultSuccess()
@@ -109,6 +111,24 @@ namespace UserRepositoryTests
 
             // Assert
             Assert.True(allDeleted);
+        }
+
+        [Fact]
+        public void AddUserAndCount_ReturnSuccess()
+        {
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+            var user = new User("testuser9", "testhash9");
+
+            // Act
+            bool isAdded = userRepositoryAcessor.Add(user);
+            int count = userRepositoryAcessor.Count();
+
+            // Assert
+            Assert.True(isAdded);
+            Assert.Equal(1, count);
+
+
         }
     }
 }
