@@ -1,17 +1,17 @@
-using System.Linq.Expressions;
 using MySql.Data.MySqlClient;
-namespace DataBaseUtility
+using UserAccount;
+namespace UserRepository
 {
     /// <summary>
     /// Encapsulate private class 'PrivateDatabaseManager.
     /// </summary>
-    public class DatabaseManagerAcessor
+    public class UserRepositoryAcessor : IUserRepository
     {
-        private readonly PrivateDatabaseManager _privateDatabaseManager;
+        private readonly PrivateRepositoryAccesor _privateDatabaseManager;
 
-        public DatabaseManagerAcessor()
+        public UserRepositoryAcessor()
         {
-            _privateDatabaseManager = new PrivateDatabaseManager();
+            _privateDatabaseManager = new PrivateRepositoryAccesor();
         }
 
         /// <summary>
@@ -70,16 +70,29 @@ namespace DataBaseUtility
         {
             _privateDatabaseManager.Update(oldusername, newusername, passwordhash, datetime);
         }
+
+        //TODO: Implement
+        public bool UsernameExists(string username)
+        {
+            return _privateDatabaseManager.UsernameExists(username);
+        }
+
+
+        public void Add(User user)
+        {
+            _privateDatabaseManager.Add(user);
+        }
+
         /// <summary>
         /// Private Database Manager class
         /// </summary>
-        class PrivateDatabaseManager
+        class PrivateRepositoryAccesor
         {
-            private MySqlConnection connection;
-            private string server;
-            private string database;
-            private string uid;
-            private string password;
+            private MySqlConnection _connection;
+            private string _server;
+            private string _database;
+            private string _uid;
+            private string _password;
 
             //Constructor
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -87,7 +100,7 @@ namespace DataBaseUtility
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-            public PrivateDatabaseManager()
+            public PrivateRepositoryAccesor()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -102,15 +115,15 @@ namespace DataBaseUtility
             /// </summary>
             private void Initialize()
             {
-                server = "localhost";
-                database = "spmdb";
-                uid = "root";
-                password = "FullstackDev12!";
+                _server = "localhost";
+                _database = "spmdb";
+                _uid = "root";
+                _password = "FullstackDev12!";
                 string connectionString;
-                connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-                database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+                connectionString = "SERVER=" + _server + ";" + "DATABASE=" +
+                _database + ";" + "UID=" + _uid + ";" + "PASSWORD=" + _password + ";";
 
-                connection = new MySqlConnection(connectionString);
+                _connection = new MySqlConnection(connectionString);
             }
 
             /// <summary>
@@ -138,7 +151,7 @@ namespace DataBaseUtility
             {
                 try
                 {
-                    connection.Open();
+                    _connection.Open();
                     return true;
                 }
                 catch (MySqlException ex)
@@ -170,7 +183,7 @@ namespace DataBaseUtility
             {
                 try
                 {
-                    connection.Close();
+                    _connection.Close();
                     return true;
                 }
                 catch (MySqlException ex)
@@ -192,7 +205,7 @@ namespace DataBaseUtility
 
                 if (this.OpenConnection())
                 {
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlCommand cmd = new MySqlCommand(query, _connection);
 
                     cmd.ExecuteReader();
 
@@ -215,7 +228,7 @@ namespace DataBaseUtility
                 {
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.CommandText = query;
-                    cmd.Connection = connection;
+                    cmd.Connection = _connection;
 
                     cmd.ExecuteReader();
 
@@ -234,7 +247,7 @@ namespace DataBaseUtility
 
                 if (this.OpenConnection() == true)
                 {
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlCommand cmd = new MySqlCommand(query, _connection);
                     cmd.ExecuteReader();
                     this.CloseConnection();
                 }
@@ -258,7 +271,7 @@ namespace DataBaseUtility
 
                 if (this.OpenConnection() == true)
                 {
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlCommand cmd = new MySqlCommand(query, _connection);
 
                     MySqlDataReader dataReader = cmd.ExecuteReader();
 
@@ -279,6 +292,40 @@ namespace DataBaseUtility
                 {
                     return list;
                 }
+            }
+            /// <summary>
+            /// Adds user to DB
+            /// </summary>
+            /// <param name="user">User</param>
+            internal void Add(User user)
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("INSERT INTO users (userName, passwordHash, creationDate)"
+                    + " VALUES (@UserName, @PasswordHash, @CreationDate)", _connection);
+
+                cmd.Parameters.AddWithValue("@UserName", user.UserName);
+                cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                cmd.Parameters.AddWithValue("@CreationDate", user.CreationDate);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+            }
+            /// <summary>
+            /// Checks if username is in DB
+            /// </summary>
+            /// <param name="username">string</param>
+            /// <returns>true or false</returns>
+            internal bool UsernameExists(string username)
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE userName = @UserName", _connection);
+                cmd.Parameters.AddWithValue("@UserName", username);
+                var result = Convert.ToInt32(cmd.ExecuteScalar());
+                return result > 0;
+
             }
 
             // //Count statement
