@@ -55,10 +55,10 @@ namespace UserRepository
         /// Delete user
         /// </summary>
         /// <param name="username"></param>
-        public void Delete(string username)
-        {
-            _privateDatabaseManager.Delete(username);
-        }
+        // public void Delete(string username)
+        // {
+        //     _privateDatabaseManager.Delete(username);
+        // }
 
         /// <summary>
         /// Update user
@@ -81,6 +81,22 @@ namespace UserRepository
         public bool Add(User user)
         {
             return _privateDatabaseManager.Add(user);
+        }
+
+        //TODO: Implement
+        public bool Update(User user, string newUserName)
+        {
+            return _privateDatabaseManager.Update(user, newUserName);
+        }
+
+        public bool Delete(User user)
+        {
+            return _privateDatabaseManager.Delete(user);
+        }
+
+        public bool DeleteAll()
+        {
+            return _privateDatabaseManager.DeleteAll();
         }
 
         /// <summary>
@@ -241,18 +257,18 @@ namespace UserRepository
             /// Delete User from database
             /// </summary>
             /// <param name="username">string</param>
-            public void Delete(string username)
-            {
-                string query = $"DELETE FROM users WHERE userName= '{username}'";
+            // public void Delete(string username)
+            // {
+            //     string query = $"DELETE FROM users WHERE userName= '{username}'";
 
-                if (this.OpenConnection() == true)
-                {
-                    MySqlCommand cmd = new MySqlCommand(query, _connection);
-                    cmd.ExecuteReader();
-                    this.CloseConnection();
-                }
+            //     if (this.OpenConnection() == true)
+            //     {
+            //         MySqlCommand cmd = new MySqlCommand(query, _connection);
+            //         cmd.ExecuteReader();
+            //         this.CloseConnection();
+            //     }
 
-            }
+            // }
 
 
             /// <summary>
@@ -331,13 +347,93 @@ namespace UserRepository
             /// <returns>true or false</returns>
             internal bool UsernameExists(string username)
             {
-                _connection.Open();
+                try
+                {
+                    _connection.Open();
 
-                var cmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE userName = @UserName", _connection);
-                cmd.Parameters.AddWithValue("@UserName", username);
-                var result = Convert.ToInt32(cmd.ExecuteScalar());
-                return result > 0;
+                    var cmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE userName = @UserName", _connection);
+                    cmd.Parameters.AddWithValue("@UserName", username);
+                    var result = Convert.ToInt32(cmd.ExecuteScalar());
 
+                    _connection.Close();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error checking usersnames" + ex.Message);
+                    return true;
+                }
+
+            }
+
+            internal bool Update(User user, string newUserName)
+            {
+
+
+                try
+                {
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand
+                        ("UPDATE users SET userName=@NewUserName, passwordHash=@PasswordHash,"
+                          + " creationDate=@CreationDate WHERE userName=@UserName");
+                    cmd.Parameters.AddWithValue("@PasswordHash", user.UserName);
+                    cmd.Parameters.AddWithValue("@NewUserName", newUserName);
+                    cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    cmd.Parameters.AddWithValue("@CreationDate", user.CreationDate);
+                    cmd.ExecuteNonQuery();
+
+                    _connection.Close();
+
+                    return true;
+
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("There was an error updating the user " + ex.Message);
+                    return false;
+                }
+            }
+
+            internal bool Delete(User user)
+            {
+                try
+                {
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand("DELETE FROM users WHERE userName=@UserName", _connection);
+                    cmd.Parameters.AddWithValue("@UserName", user.UserName);
+                    cmd.ExecuteNonQuery();
+
+                    _connection.Close();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error deleting user " + ex.Message);
+                    return false;
+                }
+            }
+
+            internal bool DeleteAll()
+            {
+                try
+                {
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand("DELETE FROM users", _connection);
+                    cmd.ExecuteNonQuery();
+
+                    _connection.Close();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    return false;
+                }
             }
 
             // //Count statement
