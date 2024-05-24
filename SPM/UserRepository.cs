@@ -78,9 +78,9 @@ namespace UserRepository
         }
 
 
-        public void Add(User user)
+        public bool Add(User user)
         {
-            _privateDatabaseManager.Add(user);
+            return _privateDatabaseManager.Add(user);
         }
 
         /// <summary>
@@ -297,19 +297,31 @@ namespace UserRepository
             /// Adds user to DB
             /// </summary>
             /// <param name="user">User</param>
-            internal void Add(User user)
+            internal bool Add(User user)
             {
-                _connection.Open();
 
-                var cmd = new MySqlCommand("INSERT INTO users (userName, passwordHash, creationDate)"
-                    + " VALUES (@UserName, @PasswordHash, @CreationDate)", _connection);
+                try
+                {
+                    _connection.Open();
 
-                cmd.Parameters.AddWithValue("@UserName", user.UserName);
-                cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-                cmd.Parameters.AddWithValue("@CreationDate", user.CreationDate);
-                cmd.ExecuteNonQuery();
+                    var cmd = new MySqlCommand("INSERT INTO users (userName, passwordHash, creationDate)"
+                        + " VALUES (@UserName, @PasswordHash, @CreationDate)", _connection);
 
-                _connection.Close();
+                    cmd.Parameters.AddWithValue("@UserName", user.UserName);
+                    cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    cmd.Parameters.AddWithValue("@CreationDate", user.CreationDate);
+                    cmd.ExecuteNonQuery();
+
+                    _connection.Close();
+
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine(ex.Message);
+
+                    return false;
+                }
 
             }
             /// <summary>
