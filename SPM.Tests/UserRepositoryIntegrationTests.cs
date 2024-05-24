@@ -1,33 +1,21 @@
 using Xunit;
-using SPM;
 using UserRepository;
-
 
 namespace UserRepositoryTests
 {
-
-
-    public class UserRepositoryUnitTests
+    public class UserRepositoryIntegrationTests
     {
+
         [Fact]
-        public void CanOpenConnection_ReturnSuccess()
+        public void CanOpenAndCloseConnection_ResultSuccess()
         {
             var userRepositoryAcessor = new UserRepositoryAcessor();
 
             bool isConnected = userRepositoryAcessor.OpenDatabaseConnection();
-
-            Assert.True(isConnected);
-
-        }
-
-        [Fact]
-        public void CanCloseConnection_ReturnSuccess()
-        {
-            var userRepositoryAcessor = new UserRepositoryAcessor();
             bool isClosed = userRepositoryAcessor.CloseDatabaseConnection();
 
+            Assert.True(isConnected);
             Assert.True(isClosed);
-
         }
     }
 }
