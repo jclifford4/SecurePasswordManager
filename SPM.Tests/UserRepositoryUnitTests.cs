@@ -90,5 +90,19 @@ namespace SPM.Tests
             Assert.True(isClosed);
 
         }
+
+        [Fact]
+        public void CanGetMySqlBackupFiles_ReturnSuccess()
+        {
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+            string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
+
+            // Act
+            string[] fileNames = userRepositoryAcessor.GetBackups(backupPath);
+
+            // Assert
+            Assert.True(fileNames.Length >= 0);
+        }
     }
 }

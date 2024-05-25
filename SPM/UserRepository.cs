@@ -112,6 +112,11 @@ namespace UserRepository
             return _privateDatabaseManager.Restore(host, user, password, database, backupPath, fileName);
         }
 
+        public string[] GetBackups(string backupPath)
+        {
+            return _privateDatabaseManager.GetBackups(backupPath);
+        }
+
         /// <summary>
         /// Private Database Manager class
         /// </summary>
@@ -548,6 +553,25 @@ namespace UserRepository
                 {
                     Console.WriteLine("Error: " + ex.Message);
                     return false;
+                }
+            }
+
+            internal string[] GetBackups(string backupPath)
+            {
+                string directoryPath = backupPath;
+
+                // Check if the directory exists
+                if (Directory.Exists(directoryPath))
+                {
+                    // Get all files in the directory and its subdirectories
+                    string[] fileNames = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+
+                    return fileNames;
+                }
+                else
+                {
+                    Console.WriteLine("The directory does not exist.");
+                    return [];
                 }
             }
         }

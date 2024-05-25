@@ -10,4 +10,5 @@ public interface IUserRepository
     int Count();
     bool Backup(string host, string user, string password, string database, string backupPath);
     bool Restore(string host, string user, string password, string database, string backupPath, string fileName);
+    string[] GetBackups(string backupPath);
 }
