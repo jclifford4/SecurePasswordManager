@@ -17,7 +17,7 @@ namespace SPM.Tests
             Environment.SetEnvironmentVariable("USER", "testing");
             Environment.SetEnvironmentVariable("PASSWORD", "bigpassword");
             Environment.SetEnvironmentVariable("DATABASE", "spmdb");
-            Environment.SetEnvironmentVariable("BACKUP_PATH", "J:");
+            Environment.SetEnvironmentVariable("BACKUP_PATH", "J:\\dotnetProjects\\SecurePasswordManager\\SPM\\SPMDatabase\\backups\\");
         }
 
         [Fact]
@@ -31,18 +31,42 @@ namespace SPM.Tests
             string password = Environment.GetEnvironmentVariable("PASSWORD");
             string database = Environment.GetEnvironmentVariable("DATABASE");
             string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
-            string dateTime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
 
             // Act
-            userRepositoryAcessor.Backup(host, user, password, database, Path.Combine(backupPath, $"backup_{dateTime}.sql"));
+            bool isBackedUp = userRepositoryAcessor.Backup(host, user, password, database, backupPath);
 
             // Assert
             Assert.False(host == null);
             Assert.False(user == null);
             Assert.False(password == null);
             Assert.False(backupPath == null);
-            Assert.True(File.Exists(backupPath));
+            Assert.True(isBackedUp);
+
+        }
+        [Fact]
+        public void RestoreDatabase_ReturnSuccess()
+        {
+
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+            string host = Environment.GetEnvironmentVariable("HOST");
+            string user = Environment.GetEnvironmentVariable("USER");
+            string password = Environment.GetEnvironmentVariable("PASSWORD");
+            string database = Environment.GetEnvironmentVariable("DATABASE");
+            string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
+            string fileName = "MySqlBackup2024-05-25_15-16-32-1632.sql";
+
+
+            // Act
+            bool isRestored = userRepositoryAcessor.Restore(host, user, password, database, backupPath, fileName);
+
+            // Assert
+            Assert.False(host == null);
+            Assert.False(user == null);
+            Assert.False(password == null);
+            Assert.False(backupPath == null);
+            Assert.True(isRestored);
 
         }
 

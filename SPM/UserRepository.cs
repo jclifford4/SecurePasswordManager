@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using UserAccount;
 namespace UserRepository
@@ -71,7 +72,6 @@ namespace UserRepository
             _privateDatabaseManager.Update(oldusername, newusername, passwordhash, datetime);
         }
 
-        //TODO: Implement
         public bool UsernameExists(string username)
         {
             return _privateDatabaseManager.UsernameExists(username);
@@ -83,7 +83,6 @@ namespace UserRepository
             return _privateDatabaseManager.Add(user);
         }
 
-        //TODO: Implement
         public bool Update(User user, string newUserName)
         {
             return _privateDatabaseManager.Update(user, newUserName);
@@ -97,6 +96,20 @@ namespace UserRepository
         public bool DeleteAll()
         {
             return _privateDatabaseManager.DeleteAll();
+        }
+
+        public int Count()
+        {
+            return _privateDatabaseManager.Count();
+        }
+
+        public bool Backup(string host, string user, string password, string database, string backupPath)
+        {
+            return _privateDatabaseManager.Backup(host, user, password, database, backupPath);
+        }
+        public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
+        {
+            return _privateDatabaseManager.Restore(host, user, password, database, backupPath, fileName);
         }
 
         /// <summary>
@@ -436,20 +449,107 @@ namespace UserRepository
                 }
             }
 
-            // //Count statement
-            // public int Count()
-            // {
-            // }
+            internal int Count()
+            {
+                try
+                {
+                    _connection.Open();
 
-            // //Backup
-            // public void Backup()
-            // {
-            // }
+                    var cmd = new MySqlCommand("SELECT Count(*) FROM users", _connection);
+                    int rowCount = Convert.ToInt32(cmd.ExecuteScalar());
 
-            // //Restore
-            // public void Restore()
-            // {
-            // }
+                    _connection.Close();
+
+                    return rowCount;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    return -1;
+                }
+            }
+
+
+            //Backup
+            internal bool Backup(string host, string user, string password, string database, string backupPath)
+            {
+                try
+                {
+                    // DateTime Time = DateTime.Now;
+                    // int year = Time.Year;
+                    // int month = Time.Month;
+                    // int day = Time.Day;
+                    // int hour = Time.Hour;
+                    // int minute = Time.Minute;
+                    // int second = Time.Second;
+                    // int millisecond = Time.Millisecond;
+                    string dateTime = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ms");
+
+
+                    string path = backupPath + "MySqlBackup"
+                    + dateTime + ".sql";
+                    StreamWriter file = new StreamWriter(path);
+
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump";
+                    psi.RedirectStandardInput = false;
+                    psi.RedirectStandardOutput = true;
+                    psi.Arguments = string.Format(@"-u{0} -p{1} -h{2} {3}",
+                        user, password, host, database);
+                    psi.UseShellExecute = false;
+
+                    Process process = Process.Start(psi);
+
+                    string output;
+                    output = process.StandardOutput.ReadToEnd();
+                    file.WriteLine(output);
+                    process.WaitForExit();
+                    file.Close();
+                    process.Close();
+
+                    return true;
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    return false;
+                }
+            }
+
+            //Restore
+            public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
+            {
+                try
+                {
+                    string path = backupPath + fileName;
+                    StreamReader file = new StreamReader(path);
+                    string input = file.ReadToEnd();
+                    file.Close();
+
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql";
+                    psi.RedirectStandardInput = true;
+                    psi.RedirectStandardOutput = false;
+                    psi.Arguments = string.Format(@"-u{0} -p{1} -h{2} {3}",
+                        user, password, host, database);
+                    psi.UseShellExecute = false;
+
+                    Process process = Process.Start(psi);
+
+                    process.StandardInput.WriteLine(input);
+                    process.StandardInput.Close();
+                    process.WaitForExit();
+                    process.Close();
+
+
+                    return true;
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                    return false;
+                }
+            }
         }
     }
 }
