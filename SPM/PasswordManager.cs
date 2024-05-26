@@ -23,6 +23,7 @@ class PasswordManager
         passwordStorage[storageKey] = encryptedPassword;
         Console.WriteLine($"Password stored successfully! {storageKey} : {encryptedPassword}");
     }
+
     /// <summary>
     /// Decrypt the password
     /// </summary>

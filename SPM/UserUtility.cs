@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using UserAccount;
 
-namespace UserUtily
+namespace UserUtility
 {
     public static class UserUtil
     {
+
+        /// <summary>
+        /// Hashes password.
+        /// </summary>
+        /// <param name="userName">String</param>
+        /// <param name="providedPassword">String</param>
+        /// <returns>Returns the hashed password</returns>
         public static string HashPassword(string userName, string providedPassword)
         {
             PasswordHasher<string> hasher = new PasswordHasher<string>();
@@ -17,7 +24,13 @@ namespace UserUtily
             return Guid.NewGuid().ToString();
         }
 
-        public static User CreateUser(string userName, string providedPassword)
+        /// <summary>
+        /// Creates a User and returns it.
+        /// </summary>
+        /// <param name="userName">User</param>
+        /// <param name="providedPassword">string</param>
+        /// <returns>User</returns>
+        public static User CreateUserAndHashPassword(string userName, string providedPassword)
         {
             // Check DB if userName already exists.
             // Hash the password;

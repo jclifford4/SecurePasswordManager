@@ -1,5 +1,5 @@
 ﻿using PasswordUtility;
-using UserUtily;
+using UserUtility;
 using HashUtility;
 using UserAccount;
 using UserRepository;

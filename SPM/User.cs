@@ -1,4 +1,5 @@
 using HashUtility;
+using UserUtility;
 
 namespace UserAccount
 {
@@ -14,13 +15,23 @@ namespace UserAccount
         public string CreationDate { get => _creationDate; }
         // public List<Tuple<string, string>> UserItemsAndHashes { get => _userItemsAndHashes; }
 
-        public User()
-        {
-            // this._userItemsAndHashes = new List<Tuple<string, string>>();
-            this._userName = string.Empty;
-            this._passwordHash = string.Empty;
-            this._creationDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        }
+        // public User()
+        // {
+        //     // this._userItemsAndHashes = new List<Tuple<string, string>>();
+        //     this._userName = string.Empty;
+        //     this._passwordHash = string.Empty;
+        //     this._creationDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        // }
+
+        // public User(string UserName)
+        // {
+        //     if (string.IsNullOrWhiteSpace(UserName))
+        //         throw new ArgumentException("Username cannot be empty or whitespace.", nameof(UserName));
+
+        //     this._userName = UserName;
+        //     this._passwordHash = string.Empty;
+        //     this._creationDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        // }
 
         // public User(string userName)
         // {
@@ -28,10 +39,16 @@ namespace UserAccount
         //     this._passwordHash = string.Empty;
         // }
 
-        public User(string UserName, string PasswordHash)
+        public User(string UserName, string providedPassword)
         {
+            if (string.IsNullOrWhiteSpace(UserName))
+                throw new ArgumentException("Username cannot be empty or whitespace.", nameof(UserName));
+
+            if (string.IsNullOrWhiteSpace(PasswordHash))
+                throw new ArgumentException("Username cannot be empty or whitespace.", nameof(UserName));
+
             this._userName = UserName;
-            this._passwordHash = PasswordHash;
+            this._passwordHash = UserUtil.HashPassword(UserName, providedPassword);
             this._creationDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             // this._userItemsAndHashes = new List<Tuple<string, string>>();
 
