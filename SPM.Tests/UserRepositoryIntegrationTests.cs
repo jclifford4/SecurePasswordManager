@@ -122,6 +122,7 @@ namespace SPM.Tests
             Assert.True(isAdded);
             Assert.True(exists);
         }
+
         [Fact]
         public void AddThenDeleteUser_ReturnSuccess()
         {
@@ -186,7 +187,7 @@ namespace SPM.Tests
 
             // Assert
             Assert.True(isAdded);
-            Assert.True(currentCount > initialCount);     // Initial + newly added user
+            Assert.Equal(currentCount, initialCount + 1);     // Initial + newly added user
             Assert.True(isRestored);
 
         }
@@ -209,7 +210,7 @@ namespace SPM.Tests
             int currentBackupFileCount = userRepositoryAcessor.GetBackups(backupPath).Length;
 
             // Assert
-            Assert.True(currentBackupFileCount > initialBackupFileCount);
+            Assert.Equal(currentBackupFileCount, initialBackupFileCount + 1);
         }
     }
 }
