@@ -6,6 +6,7 @@ using UserRepository;
 namespace SPM.Tests
 {
 
+    [Collection("SequentialTests")]
     public class UserRepositoryUnitTests
     {
 
@@ -19,6 +20,10 @@ namespace SPM.Tests
             Environment.SetEnvironmentVariable("DATABASE", "spmdb");
             Environment.SetEnvironmentVariable("BACKUP_PATH", "J:\\dotnetProjects\\SecurePasswordManager\\SPM\\SPMDatabase\\backups\\");
         }
+
+
+
+
 
         [Fact]
         public void BackupDatabase_ReturnSuccess()
@@ -73,10 +78,14 @@ namespace SPM.Tests
         [Fact]
         public void CanOpenConnection_ReturnSuccess()
         {
+
+            // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
 
+            // Act
             bool isConnected = userRepositoryAcessor.OpenDatabaseConnection();
 
+            // Assert
             Assert.True(isConnected);
 
         }
@@ -84,9 +93,13 @@ namespace SPM.Tests
         [Fact]
         public void CanCloseConnection_ReturnSuccess()
         {
+            // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
             bool isClosed = userRepositoryAcessor.CloseDatabaseConnection();
 
+            // Assert
             Assert.True(isClosed);
 
         }

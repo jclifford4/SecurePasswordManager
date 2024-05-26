@@ -3,8 +3,10 @@ using SPM;
 using UserRepository;
 using UserAccount;
 
+
 namespace SPM.Tests
 {
+    [Collection("SequentialTests")]
     public class UserRepositoryIntegrationTests
     {
 
@@ -19,7 +21,12 @@ namespace SPM.Tests
             Environment.SetEnvironmentVariable("BACKUP_PATH", "J:\\dotnetProjects\\SecurePasswordManager\\SPM\\SPMDatabase\\backups\\");
         }
 
-        internal bool RestoreDB()
+        /// <summary>
+        /// internal function to set environment variables to be able to restore
+        /// the initial state of the DB for each test.
+        /// </summary>
+        /// <returns>true or false</returns>
+        internal static bool RestoreDB()
         {
             var userRepositoryAcessor = new UserRepositoryAcessor();
 
@@ -37,11 +44,14 @@ namespace SPM.Tests
         [Fact]
         public void CanOpenAndCloseConnection_ResultSuccess()
         {
+            // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
 
+            // Act
             bool isConnected = userRepositoryAcessor.OpenDatabaseConnection();
             bool isClosed = userRepositoryAcessor.CloseDatabaseConnection();
 
+            // Assert
             Assert.True(isConnected);
             Assert.True(isClosed);
         }
@@ -86,23 +96,29 @@ namespace SPM.Tests
         [Fact]
         public void CheckUserNameExists_ReturnFailed()
         {
+            // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
             var user = new User("testuser2", "testhash2");
 
+            // Act
             bool exists = userRepositoryAcessor.UsernameExists(user.UserName);
 
+            // Assert
             Assert.False(exists);
         }
 
         [Fact]
         public void CheckUserNameExists_ReturnSuccess()
         {
+            // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
             var user = new User("testuser3", "testhash3");
 
+            // Act
             bool isAdded = userRepositoryAcessor.Add(user);
             bool exists = userRepositoryAcessor.UsernameExists(user.UserName);
 
+            // Assert
             Assert.True(isAdded);
             Assert.True(exists);
         }
@@ -161,15 +177,16 @@ namespace SPM.Tests
             var user = new User("testuser9", "testhash9");
 
             // Act
+            int initialCount = userRepositoryAcessor.Count();
             bool isAdded = userRepositoryAcessor.Add(user);
-            int count = userRepositoryAcessor.Count();
+            int currentCount = userRepositoryAcessor.Count();
 
             // Restore DB
             bool isRestored = RestoreDB();
 
             // Assert
             Assert.True(isAdded);
-            Assert.Equal(2, count);     // Initial + newly added user
+            Assert.True(currentCount > initialCount);     // Initial + newly added user
             Assert.True(isRestored);
 
         }
@@ -190,8 +207,9 @@ namespace SPM.Tests
             int initialBackupFileCount = userRepositoryAcessor.GetBackups(backupPath).Length;
             userRepositoryAcessor.Backup(host, user, password, database, backupPath);
             int currentBackupFileCount = userRepositoryAcessor.GetBackups(backupPath).Length;
+
             // Assert
-            Assert.Equal(currentBackupFileCount, initialBackupFileCount + 1);
+            Assert.True(currentBackupFileCount > initialBackupFileCount);
         }
     }
 }

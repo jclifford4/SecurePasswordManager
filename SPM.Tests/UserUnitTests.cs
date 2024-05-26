@@ -2,7 +2,6 @@ using Xunit;
 using SPM;
 using UserAccount;
 
-
 namespace SPM.Tests
 {
     public class UserUnitTests
