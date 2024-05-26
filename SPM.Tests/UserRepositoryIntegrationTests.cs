@@ -8,6 +8,31 @@ namespace SPM.Tests
     public class UserRepositoryIntegrationTests
     {
 
+        public UserRepositoryIntegrationTests()
+        {
+            // Set environment variables for the test run
+            Environment.SetEnvironmentVariable("ENCRYPTION_KEY", "+BMnIcKdA/q8ie2jlP3sCmjni9dEAWiYGZyn7gNPa3A=");
+            Environment.SetEnvironmentVariable("HOST", "localhost");
+            Environment.SetEnvironmentVariable("USER", "testing");
+            Environment.SetEnvironmentVariable("PASSWORD", "bigpassword");
+            Environment.SetEnvironmentVariable("DATABASE", "spmdb");
+            Environment.SetEnvironmentVariable("BACKUP_PATH", "J:\\dotnetProjects\\SecurePasswordManager\\SPM\\SPMDatabase\\backups\\");
+        }
+
+        internal bool RestoreDB()
+        {
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            string host = Environment.GetEnvironmentVariable("HOST");
+            string user = Environment.GetEnvironmentVariable("USER");
+            string password = Environment.GetEnvironmentVariable("PASSWORD");
+            string database = Environment.GetEnvironmentVariable("DATABASE");
+            string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
+            string fileName = "MySqlBackup_2024-05-25_16-46-25-4625.sql";
+            return userRepositoryAcessor.Restore(host, user, password, database, backupPath, fileName);
+
+        }
+
 
         [Fact]
         public void CanOpenAndCloseConnection_ResultSuccess()
@@ -30,9 +55,13 @@ namespace SPM.Tests
 
             // Act
             bool isAdded = userRepositoryAcessor.Add(user);
+            // Restore DB
+            bool isRestored = RestoreDB();
 
             // Assert
             Assert.True(isAdded);
+            Assert.True(isRestored);
+
         }
 
         [Fact]
@@ -45,10 +74,13 @@ namespace SPM.Tests
             // Act
             bool isAdded = userRepositoryAcessor.Add(user);
             bool isAddedAgain = userRepositoryAcessor.Add(user);
+            // Restore DB
+            bool isRestored = RestoreDB();
 
             // Assert
             Assert.True(isAdded);
             Assert.False(isAddedAgain);
+            Assert.True(isRestored);
         }
 
         [Fact]
@@ -86,10 +118,14 @@ namespace SPM.Tests
             bool exists = userRepositoryAcessor.UsernameExists(user.UserName);
             bool isDeleted = userRepositoryAcessor.Delete(user);
 
+            // Restore DB
+            bool isRestored = RestoreDB();
+
             // Assert
             Assert.True(isAdded);
             Assert.True(exists);
             Assert.True(isDeleted);
+            Assert.True(isRestored);
         }
 
         [Fact]
@@ -109,8 +145,12 @@ namespace SPM.Tests
             userRepositoryAcessor.Add(user4);
             bool allDeleted = userRepositoryAcessor.DeleteAll();
 
+            // Restore DB
+            bool isRestored = RestoreDB();
+
             // Assert
             Assert.True(allDeleted);
+            Assert.True(isRestored);
         }
 
         [Fact]
@@ -124,11 +164,34 @@ namespace SPM.Tests
             bool isAdded = userRepositoryAcessor.Add(user);
             int count = userRepositoryAcessor.Count();
 
+            // Restore DB
+            bool isRestored = RestoreDB();
+
             // Assert
             Assert.True(isAdded);
-            Assert.Equal(1, count);
+            Assert.Equal(2, count);     // Initial + newly added user
+            Assert.True(isRestored);
 
+        }
 
+        [Fact]
+        public void GetDatabaseBackups_CountPlusOne_ReturnSuccess()
+        {
+            // Arrange
+            string host = Environment.GetEnvironmentVariable("HOST");
+            string user = Environment.GetEnvironmentVariable("USER");
+            string password = Environment.GetEnvironmentVariable("PASSWORD");
+            string database = Environment.GetEnvironmentVariable("DATABASE");
+            string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
+
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
+            int initialBackupFileCount = userRepositoryAcessor.GetBackups(backupPath).Length;
+            userRepositoryAcessor.Backup(host, user, password, database, backupPath);
+            int currentBackupFileCount = userRepositoryAcessor.GetBackups(backupPath).Length;
+            // Assert
+            Assert.Equal(currentBackupFileCount, initialBackupFileCount + 1);
         }
     }
 }

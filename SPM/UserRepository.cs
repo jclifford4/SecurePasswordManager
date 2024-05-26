@@ -491,7 +491,7 @@ namespace UserRepository
                     string dateTime = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ms");
 
 
-                    string path = backupPath + "MySqlBackup"
+                    string path = backupPath + "MySqlBackup_"
                     + dateTime + ".sql";
                     StreamWriter file = new StreamWriter(path);
 

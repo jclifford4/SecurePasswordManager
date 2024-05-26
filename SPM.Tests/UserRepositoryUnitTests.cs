@@ -55,7 +55,7 @@ namespace SPM.Tests
             string password = Environment.GetEnvironmentVariable("PASSWORD");
             string database = Environment.GetEnvironmentVariable("DATABASE");
             string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
-            string fileName = "MySqlBackup2024-05-25_15-16-32-1632.sql";
+            string fileName = "MySqlBackup_2024-05-25_16-46-25-4625.sql";
 
 
             // Act
@@ -102,7 +102,7 @@ namespace SPM.Tests
             string[] fileNames = userRepositoryAcessor.GetBackups(backupPath);
 
             // Assert
-            Assert.True(fileNames.Length >= 0);
+            Assert.True(fileNames.Length > 0);
         }
     }
 }
