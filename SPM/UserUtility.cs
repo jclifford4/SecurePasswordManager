@@ -5,7 +5,10 @@ namespace UserUtility
 {
     public static class UserUtil
     {
-
+        private static readonly HashSet<char> illegalCharactersSet =
+                        ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+                         '=', '+', '\\', '{', '}', '|', ',', '.', '\"',
+                         '<', '>', '/', '?', '~', '\'', ';', ':'];
         /// <summary>
         /// Hashes password.
         /// </summary>
@@ -41,6 +44,39 @@ namespace UserUtility
             return newUser;
 
 
+        }
+
+        /// <summary>
+        /// Check username for minimum length and illegal characters.
+        /// </summary>
+        /// <param name="userName">String</param>
+        /// <returns>true or false</returns>
+        internal static bool IsValidUsername(string userName)
+        {
+            if (userName.Length < 3 || userName.Length > 32)
+                return false;
+
+            foreach (var character in userName)
+            {
+                if (illegalCharactersSet.Contains(character))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// Check password for minimum length and illegal characters.
+        /// </summary>
+        /// <param name="providedPassword">String</param>
+        /// <returns>true or false</returns>
+        internal static bool IsValidPassword(string providedPassword)
+        {
+            if (providedPassword.Length < 8 || providedPassword.Length > 128)
+                return false;
+
+            return true;
         }
 
         //     public static int GetUserPasswordListLength()

@@ -39,16 +39,23 @@ namespace UserAccount
         //     this._passwordHash = string.Empty;
         // }
 
-        public User(string UserName, string providedPassword)
+        public User(string userName, string providedPassword)
         {
-            if (string.IsNullOrWhiteSpace(UserName))
-                throw new ArgumentException("Username cannot be empty or whitespace.", nameof(UserName));
+            if (string.IsNullOrWhiteSpace(userName))
+                throw new ArgumentException("Username cannot be empty or whitespace.", nameof(userName));
 
-            if (string.IsNullOrWhiteSpace(PasswordHash))
-                throw new ArgumentException("Username cannot be empty or whitespace.", nameof(UserName));
+            if (!UserUtil.IsValidUsername(userName))
+                throw new ArgumentException("Username has illegal characters.", nameof(userName));
 
-            this._userName = UserName;
-            this._passwordHash = UserUtil.HashPassword(UserName, providedPassword);
+            if (string.IsNullOrWhiteSpace(providedPassword))
+                throw new ArgumentException("Password cannot be empty or whitespace.");
+
+            if (!UserUtil.IsValidPassword(providedPassword))
+                throw new ArgumentException("Password has illegal characters or < 8 chars or > 128 chars.");
+
+
+            this._userName = userName;
+            this._passwordHash = UserUtil.HashPassword(userName, providedPassword);
             this._creationDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             // this._userItemsAndHashes = new List<Tuple<string, string>>();
 

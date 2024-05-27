@@ -8,6 +8,9 @@ namespace SPM.Tests
     {
         [Theory]
         [InlineData("user", "password")]
+        [InlineData("user123", "password")]
+        [InlineData("user", "password123")]
+        [InlineData("user", "password!@#$%^&*()-_=+{}\\|,./;'<>?:\"")]
         public void CreateUser_WithValidUsernameAndPassword_SouldSucceed(string username, string providedPassword)
         {
 
@@ -20,6 +23,16 @@ namespace SPM.Tests
 
 
 
+        }
+
+        [Theory]
+        [InlineData("", "password")]
+        [InlineData("u", "password")]
+        [InlineData("us", "password")]
+        [InlineData("useruseruseruseruseruseruseruseru", "password")]    // over 32 chars, (+1 of upper limit)
+        public void CreateUser_WithInvalidUserNameLength_ShouldThrowArgumentException(string username, string providedPassword)
+        {
+            Assert.Throws<ArgumentException>(() => new User(username, providedPassword));
         }
 
         [Theory]
@@ -42,6 +55,10 @@ namespace SPM.Tests
         [InlineData("username", "123")]
         [InlineData("username", "1234")]
         [InlineData("username", "12345")]
+        // 139 chars, +1 over upper limit
+        [InlineData("username", "012345678901234567890123456789012345678901234567890123456789"
+                              + "012345678901234567890123456789012345678901234567890123456789"
+                              + "012345678")]
         public void CreateUser_WithInvalidPasswordLength_ShouldThrowArgumentException(string username, string providedPassword)
         {
             // Assert
@@ -81,5 +98,6 @@ namespace SPM.Tests
             Assert.Throws<ArgumentException>(() => new User(username, providedPassword));
 
         }
+
     }
 }
