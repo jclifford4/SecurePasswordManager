@@ -60,7 +60,7 @@ namespace SPM.Tests
             string password = Environment.GetEnvironmentVariable("PASSWORD");
             string database = Environment.GetEnvironmentVariable("DATABASE");
             string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
-            string fileName = "MySqlBackup_2024-05-25_16-46-25-4625.sql";
+            string fileName = "MySqlBackup_2024-05-27_13-37-06-376.sql";
 
 
             // Act

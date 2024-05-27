@@ -35,14 +35,14 @@ namespace SPM.Tests
             string password = Environment.GetEnvironmentVariable("PASSWORD");
             string database = Environment.GetEnvironmentVariable("DATABASE");
             string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
-            string fileName = "MySqlBackup_2024-05-25_16-46-25-4625.sql";
+            string fileName = "MySqlBackup_2024-05-27_13-37-06-376.sql";
             return userRepositoryAcessor.Restore(host, user, password, database, backupPath, fileName);
 
         }
 
 
         [Fact]
-        public void CanOpenAndCloseConnection_ResultSuccess()
+        public void CanOpenAndCloseConnection_ShouldSucceed()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -57,7 +57,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void AddUserToDatabase_ReturnSuccess()
+        public void AddUserToDatabase_ShouldSucceed()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -75,7 +75,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void AddDuplicateUserToDatabase_ReturnFailed()
+        public void AddDuplicateUsernameToDatabase_ShouldFail()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -94,7 +94,24 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void CheckUserNameExists_ReturnFailed()
+        public void AddDuplicateGuidToDatabase_ShouldFail()
+        {
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+            var user = new User("DupeGuidUser", "dupeguidpassword", "e3aaea18-cbc4-4193-b42b-d4e87d4d5607");
+
+            // Act
+            bool isAdded = userRepositoryAcessor.Add(user);
+            // Restore DB
+            bool isRestored = RestoreDB();
+
+            // Assert
+            Assert.False(isAdded);
+            Assert.True(isRestored);
+        }
+
+        [Fact]
+        public void CheckUserNameExists_ShouldFail()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -108,7 +125,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void CheckUserNameExists_ReturnSuccess()
+        public void CheckUserNameExists_ShouldSucceed()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -124,7 +141,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void AddThenDeleteUser_ReturnSuccess()
+        public void AddThenDeleteUser_ShouldSucceed()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -146,7 +163,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void DeleteAllFromTable_ReturnSuccess()
+        public void DeleteAllFromTable_ShouldSucceed()
         {
             // Arrange
             var userRepositoryAcessor = new UserRepositoryAcessor();
@@ -193,7 +210,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void GetDatabaseBackups_CountPlusOne_ReturnSuccess()
+        public void GetDatabaseBackups_CountPlusOne_ShouldSucceed()
         {
             // Arrange
             string host = Environment.GetEnvironmentVariable("HOST");
@@ -212,5 +229,6 @@ namespace SPM.Tests
             // Assert
             Assert.Equal(currentBackupFileCount, initialBackupFileCount + 1);
         }
+
     }
 }

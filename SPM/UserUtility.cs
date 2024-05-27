@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using UserAccount;
+using ZstdSharp.Unsafe;
 
 namespace UserUtility
 {
@@ -77,6 +78,11 @@ namespace UserUtility
                 return false;
 
             return true;
+        }
+
+        internal static bool IsValidGuid(string guid)
+        {
+            return Guid.TryParse(guid, out _);
         }
 
         //     public static int GetUserPasswordListLength()

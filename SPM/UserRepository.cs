@@ -117,6 +117,11 @@ namespace UserRepository
             return _privateDatabaseManager.GetBackups(backupPath);
         }
 
+        public bool GuidExists(string guid)
+        {
+            return _privateDatabaseManager.GuidExists(guid);
+        }
+
         /// <summary>
         /// Private Database Manager class
         /// </summary>
@@ -270,25 +275,6 @@ namespace UserRepository
                 }
             }
 
-
-            /// <summary>
-            /// Delete User from database
-            /// </summary>
-            /// <param name="username">string</param>
-            // public void Delete(string username)
-            // {
-            //     string query = $"DELETE FROM users WHERE userName= '{username}'";
-
-            //     if (this.OpenConnection() == true)
-            //     {
-            //         MySqlCommand cmd = new MySqlCommand(query, _connection);
-            //         cmd.ExecuteReader();
-            //         this.CloseConnection();
-            //     }
-
-            // }
-
-
             /// <summary>
             /// Request a select statement to database
             /// </summary>
@@ -327,6 +313,7 @@ namespace UserRepository
                     return list;
                 }
             }
+
             /// <summary>
             /// Adds user to DB
             /// </summary>
@@ -338,12 +325,13 @@ namespace UserRepository
                 {
                     _connection.Open();
 
-                    var cmd = new MySqlCommand("INSERT INTO users (userName, passwordHash, creationDate)"
-                        + " VALUES (@UserName, @PasswordHash, @CreationDate)", _connection);
+                    var cmd = new MySqlCommand("INSERT INTO users (userName, passwordHash, creationDate, guid)"
+                        + " VALUES (@UserName, @PasswordHash, @CreationDate, @Guid)", _connection);
 
                     cmd.Parameters.AddWithValue("@UserName", user.UserName);
                     cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
                     cmd.Parameters.AddWithValue("@CreationDate", user.CreationDate);
+                    cmd.Parameters.AddWithValue("@Guid", user.Guid);
                     cmd.ExecuteNonQuery();
 
                     _connection.Close();
@@ -358,6 +346,7 @@ namespace UserRepository
                 }
 
             }
+
             /// <summary>
             /// Checks if username is in DB
             /// </summary>
@@ -379,6 +368,27 @@ namespace UserRepository
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error checking usersnames" + ex.Message);
+                    return true;
+                }
+
+            }
+
+            internal bool GuidExists(string guid)
+            {
+                try
+                {
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE guid = @Guid", _connection);
+                    cmd.Parameters.AddWithValue("@Guid", guid);
+                    var result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    _connection.Close();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error checking Guid" + ex.Message);
                     return true;
                 }
 
