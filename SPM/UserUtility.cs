@@ -22,7 +22,7 @@ namespace UserUtility
             return passwordHash;
         }
 
-        public static string GenerateUserId()
+        public static string GenerateGuidAsString()
         {
             return Guid.NewGuid().ToString();
         }

@@ -1,6 +1,7 @@
 using Xunit;
 using SPM;
 using UserAccount;
+using UserUtility;
 
 namespace SPM.Tests
 {
@@ -11,7 +12,7 @@ namespace SPM.Tests
         [InlineData("user123", "password")]
         [InlineData("user", "password123")]
         [InlineData("user", "password!@#$%^&*()-_=+{}\\|,./;'<>?:\"")]
-        public void CreateUser_WithValidUsernameAndPassword_SouldSucceed(string username, string providedPassword)
+        public void CreateUser_WithValidUsernameAndPassword_ShouldSucceed(string username, string providedPassword)
         {
 
             // Act
@@ -97,6 +98,46 @@ namespace SPM.Tests
             // Assert
             Assert.Throws<ArgumentException>(() => new User(username, providedPassword));
 
+        }
+
+        [Fact]
+        public void CreateGuid_ShouldBeUnique()
+        {
+            // Arrange & Act
+            var guid1 = UserUtil.GenerateGuidAsString();
+            var guid2 = UserUtil.GenerateGuidAsString();
+
+            // Assert
+            Assert.NotEqual(guid1, guid2);
+        }
+
+        [Fact]
+        public void CreateGuid_ShouldNotBeEmpty()
+        {
+            // Arrange & Act
+            var guid1 = UserUtil.GenerateGuidAsString();
+
+            // Assert
+            Assert.NotEmpty(guid1);
+        }
+
+        [Fact]
+        public void CreateGuid_ShouldHaveCorrectFormat()
+        {
+            // Arrange & Act
+            var guid = UserUtil.GenerateGuidAsString();
+
+            Assert.Matches(@"^[a-fA-F0-9]{8}\-[a-fA-F0-9]{4}\-[a-fA-F0-9]{4}\-[a-fA-F0-9]{4}\-[a-fA-F0-9]{12}$", guid);
+        }
+
+        [Fact]
+        public void NewGuid_ShouldProduceValidGuid()
+        {
+            // Arrange & Act
+            var guid = UserUtil.GenerateGuidAsString();
+
+            // Assert
+            Assert.True(Guid.TryParse(guid, out _));
         }
 
     }
