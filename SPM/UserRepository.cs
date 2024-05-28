@@ -3,6 +3,7 @@ using System.Diagnostics;
 using DBServer;
 using MySql.Data.MySqlClient;
 using Users;
+
 namespace UserRepository
 {
     /// <summary>

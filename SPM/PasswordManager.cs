@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EncryptionUtility;
 
 
 class PasswordManager
@@ -19,7 +20,7 @@ class PasswordManager
             throw new ArgumentNullException(nameof(password), "Password cannot be null");
         }
 
-        string encryptedPassword = EncryptionUtility.EncryptString(password);
+        string encryptedPassword = EncryptionUtil.EncryptString(password);
         passwordStorage[storageKey] = encryptedPassword;
         Console.WriteLine($"Password stored successfully! {storageKey} : {encryptedPassword}");
     }
@@ -32,7 +33,7 @@ class PasswordManager
     {
         if (passwordStorage.TryGetValue(storageKey, out var encryptedPassword))
         {
-            string decryptedPassword = EncryptionUtility.DecryptString(encryptedPassword);
+            string decryptedPassword = EncryptionUtil.DecryptString(encryptedPassword);
             Console.WriteLine($"Decrypted Password for {storageKey}: {decryptedPassword}");
         }
         else
