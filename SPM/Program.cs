@@ -1,7 +1,7 @@
 ﻿using PasswordUtility;
 using UserUtility;
 using HashUtility;
-using UserAccount;
+using Users;
 using UserRepository;
 
 namespace Main

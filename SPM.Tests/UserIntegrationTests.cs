@@ -1,6 +1,6 @@
 using Xunit;
 using SPM;
-using UserAccount;
+using Users;
 using UserUtility;
 using HashUtility;
 

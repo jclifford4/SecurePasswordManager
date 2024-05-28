@@ -1,4 +1,4 @@
-using UserAccount;
+using Users;
 
 public interface IUserRepository
 {

@@ -1,6 +1,8 @@
+using System.Data.Common;
 using System.Diagnostics;
+using DBServer;
 using MySql.Data.MySqlClient;
-using UserAccount;
+using Users;
 namespace UserRepository
 {
     /// <summary>
@@ -77,7 +79,6 @@ namespace UserRepository
             return _privateDatabaseManager.UsernameExists(username);
         }
 
-
         public bool Add(User user)
         {
             return _privateDatabaseManager.Add(user);
@@ -132,6 +133,7 @@ namespace UserRepository
             private string _database;
             private string _uid;
             private string _password;
+            private string _passwordHash;
 
             //Constructor
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -156,11 +158,15 @@ namespace UserRepository
             {
                 _server = "localhost";
                 _database = "spmdb";
-                _uid = "root";
-                _password = "FullstackDev12!";
+                _uid = "testing";
+                _password = "bigpassword";
                 string connectionString;
                 connectionString = "SERVER=" + _server + ";" + "DATABASE=" +
                 _database + ";" + "UID=" + _uid + ";" + "PASSWORD=" + _password + ";";
+
+                // TODO: Create connection string 
+                // Server server = new Server(dbname, hostname, user, password);
+                // string conString = server.ConnectionString;
 
                 _connection = new MySqlConnection(connectionString);
             }
@@ -396,8 +402,6 @@ namespace UserRepository
 
             internal bool Update(User user, string newUserName)
             {
-
-
                 try
                 {
                     _connection.Open();
@@ -483,7 +487,6 @@ namespace UserRepository
                     return -1;
                 }
             }
-
 
             //Backup
             internal bool Backup(string host, string user, string password, string database, string backupPath)

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Update;
-using UserAccount;
+using Users;
 
 
 namespace HashUtility

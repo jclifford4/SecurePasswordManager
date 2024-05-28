@@ -1,7 +1,7 @@
 using Xunit;
 using SPM;
 using UserRepository;
-using UserAccount;
+using Users;
 
 
 namespace SPM.Tests
