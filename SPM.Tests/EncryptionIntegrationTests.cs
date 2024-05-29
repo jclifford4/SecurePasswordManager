@@ -8,7 +8,7 @@ namespace SPM.Tests
     public class EncryptionIntegrationTests
     {
 
-        EncryptionIntegrationTests()
+        public EncryptionIntegrationTests()
         {
             // Only for tests
             Environment.SetEnvironmentVariable("ENCRYPTION_KEY", "+BMnIcKdA/q8ie2jlP3sCmjni9dEAWiYGZyn7gNPa3A=");
