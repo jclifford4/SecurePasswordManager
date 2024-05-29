@@ -10,7 +10,7 @@ namespace DBServer
         private string _connection_string { get; set; }
 
 
-        public Server(string name, string hostname, string user, string providedPassword)
+        public Server(string name, string user, string passwordhash)
         {
 
             if (string.IsNullOrWhiteSpace(name))
@@ -19,11 +19,11 @@ namespace DBServer
             if (!DatabaseUtil.IsValidString(name))
                 throw new ArgumentException("Database name has illegal characters.", nameof(name));
 
-            if (string.IsNullOrWhiteSpace(hostname))
-                throw new ArgumentException("Hostname cannot be empty or whitespace.", nameof(hostname));
+            // if (string.IsNullOrWhiteSpace(hostname))
+            //     throw new ArgumentException("Hostname cannot be empty or whitespace.", nameof(hostname));
 
-            if (!DatabaseUtil.IsValidString(hostname))
-                throw new ArgumentException("Hostname has illegal characters.", nameof(hostname));
+            // if (!DatabaseUtil.IsValidString(hostname))
+            //     throw new ArgumentException("Hostname has illegal characters.", nameof(hostname));
 
             if (string.IsNullOrWhiteSpace(user))
                 throw new ArgumentException("Username cannot be empty or whitespace.", nameof(user));
@@ -31,18 +31,18 @@ namespace DBServer
             if (!DatabaseUtil.IsValidString(user))
                 throw new ArgumentException("Username has illegal characters.", nameof(user));
 
-            if (string.IsNullOrWhiteSpace(providedPassword))
+            if (string.IsNullOrWhiteSpace(passwordhash))
                 throw new ArgumentException("Password cannot be empty or whitespace.");
 
-            if (!DatabaseUtil.IsValidPassword(providedPassword))
+            if (!DatabaseUtil.IsValidPassword(passwordhash))
                 throw new ArgumentException("Password has illegal characters.");
 
-            this._database_name = DatabaseName;
+            this._database_name = name;
             this._hostname = "localhost";
-            this._user = User;
-            this._password_hash = PasswordHash;
+            this._user = user;
+            this._password_hash = passwordhash;
 
-            this._connection_string = CreateConnectionString(name, hostname, user, providedPassword);
+            this._connection_string = CreateConnectionString(name, _hostname, user, passwordhash);
         }
 
         public static string CreateConnectionString(string name, string hostname, string user, string password)
