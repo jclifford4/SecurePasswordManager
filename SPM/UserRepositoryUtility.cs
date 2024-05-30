@@ -1,6 +1,6 @@
-namespace DatabaseUtility
+namespace UserRepositoryUtility
 {
-    public static class DatabaseUtil
+    public static class UserRepositoryUtil
     {
 
         private static readonly HashSet<char> illegalCharactersSet =

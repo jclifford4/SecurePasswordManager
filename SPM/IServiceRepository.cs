@@ -1,16 +1,15 @@
-using Users;
+using Services;
 
-public interface IUserRepository
+public interface IServiceRepository
 {
-    bool UsernameExists(string username);
+    bool ServiceExists(string service);
     bool GuidExists(string guid);
-    bool Add(User user);
-    bool Update(User user, string newUserName);
-    bool Delete(User user);
+    bool Add(Service service, string username);
+    bool Update(Service service, string name);
+    bool Delete(Service service);
     bool DeleteAll();
     int Count();
     bool Backup(string host, string user, string password, string database, string backupPath);
     bool Restore(string host, string user, string password, string database, string backupPath, string fileName);
     string[] GetBackups(string backupPath);
-    int GetUserIDByUserName(string userName);
 }

@@ -124,6 +124,12 @@ namespace UserRepository
             return _privateDatabaseManager.GuidExists(guid);
         }
 
+        public int GetUserIDByUserName(string userName)
+        {
+            return _privateDatabaseManager.GetUserIDByUserName(userName);
+        }
+
+
         /// <summary>
         /// Private Database Manager class
         /// </summary>
@@ -378,6 +384,34 @@ namespace UserRepository
                     return true;
                 }
 
+            }
+
+
+
+            internal int GetUserIDByUserName(string username)
+            {
+                bool userNameExists = UsernameExists(username);
+
+
+                if (userNameExists)
+                {
+                    try
+                    {
+                        _connection.Open();
+
+                        var cmd = new MySqlCommand("SELECT userID FROM users WHERE userName = @UserName", _connection);
+                        cmd.Parameters.AddWithValue("@UserName", username);
+                        var userID = cmd.ExecuteScalar();
+                        return userID != null ? Convert.ToInt32(userID) : -1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write("Error Getting useID by username", ex.Message);
+                        return -1;
+                    }
+                }
+
+                return -1;
             }
 
             internal bool GuidExists(string guid)

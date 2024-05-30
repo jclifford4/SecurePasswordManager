@@ -1,4 +1,4 @@
-using DatabaseUtility;
+using UserRepositoryUtility;
 namespace DBServer
 {
     public class Server
@@ -16,7 +16,7 @@ namespace DBServer
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Database name cannot be empty or whitespace.", nameof(name));
 
-            if (!DatabaseUtil.IsValidString(name))
+            if (!UserRepositoryUtil.IsValidString(name))
                 throw new ArgumentException("Database name has illegal characters.", nameof(name));
 
             // if (string.IsNullOrWhiteSpace(hostname))
@@ -28,13 +28,13 @@ namespace DBServer
             if (string.IsNullOrWhiteSpace(user))
                 throw new ArgumentException("Username cannot be empty or whitespace.", nameof(user));
 
-            if (!DatabaseUtil.IsValidString(user))
+            if (!UserRepositoryUtil.IsValidString(user))
                 throw new ArgumentException("Username has illegal characters.", nameof(user));
 
             if (string.IsNullOrWhiteSpace(passwordhash))
                 throw new ArgumentException("Password cannot be empty or whitespace.");
 
-            if (!DatabaseUtil.IsValidPassword(passwordhash))
+            if (!UserRepositoryUtil.IsValidPassword(passwordhash))
                 throw new ArgumentException("Password has illegal characters.");
 
             this._database_name = name;

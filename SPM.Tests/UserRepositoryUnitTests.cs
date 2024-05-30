@@ -60,7 +60,7 @@ namespace SPM.Tests
             string password = Environment.GetEnvironmentVariable("PASSWORD");
             string database = Environment.GetEnvironmentVariable("DATABASE");
             string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
-            string fileName = "MySqlBackup_2024-05-27_13-37-06-376.sql";
+            string fileName = "MySqlBackup_2024-05-30_13-33-13-3313.sql";
 
 
             // Act
@@ -116,6 +116,51 @@ namespace SPM.Tests
 
             // Assert
             Assert.True(fileNames.Length > 0);
+        }
+
+        [Fact]
+        public void CanGetUserIDByUsername_UsernameExists_ShouldSucceed()
+        {
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+            string username = "Initial";
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+            // Assert
+            Assert.NotEqual(-1, userID);
+        }
+
+        [Fact]
+        public void CanGetUserIDByUsername_UsernameDoesNotExists_ShouldFail()
+        {
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+            string username = "bob";
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+            // Assert
+            Assert.Equal(-1, userID);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void CanGetUserIDByUsername_WithNullOrEmptyUsername_ShouldFail(string username)
+        {
+            // Arrange
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+            // Assert
+            Assert.Equal(-1, userID);
+
+
         }
     }
 }

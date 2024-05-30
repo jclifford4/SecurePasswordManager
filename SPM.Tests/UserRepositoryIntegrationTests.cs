@@ -35,7 +35,7 @@ namespace SPM.Tests
             string password = Environment.GetEnvironmentVariable("PASSWORD");
             string database = Environment.GetEnvironmentVariable("DATABASE");
             string backupPath = Environment.GetEnvironmentVariable("BACKUP_PATH");
-            string fileName = "MySqlBackup_2024-05-27_13-37-06-376.sql";
+            string fileName = "MySqlBackup_2024-05-30_13-33-13-3313.sql";
             return userRepositoryAcessor.Restore(host, user, password, database, backupPath, fileName);
 
         }
