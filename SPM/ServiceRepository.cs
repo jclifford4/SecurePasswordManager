@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using MySql.Data.MySqlClient;
 using Services;
 using UserRepository;
+using ZstdSharp.Unsafe;
 
 namespace ServiceRepository
 {
@@ -117,7 +118,7 @@ namespace ServiceRepository
             throw new NotImplementedException();
         }
 
-        public bool Delete(Service service)
+        public bool Delete(Service service, string username)
         {
             throw new NotImplementedException();
         }
@@ -142,12 +143,12 @@ namespace ServiceRepository
             throw new NotImplementedException();
         }
 
-        public bool ServiceExists(string service)
+        public bool ServiceExists(string service, string username)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(Service service, string name)
+        public bool Update(Service service, string name, string usersname)
         {
             throw new NotImplementedException();
         }
