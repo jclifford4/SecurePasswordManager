@@ -26,16 +26,11 @@ namespace Services
         //     this._creation_date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         //     this._guid = VerifyStringUtil.CreateGuid();
         // }
-        public Service(string name, string guid, string password)
+        public Service(string name, string password)
         {
-            if (!VerifyStringUtil.isValidUsername(name))
-                throw new ArgumentException("Error: ", nameof(name));
-
-            if (!VerifyStringUtil.isValidGuid(guid))
-                throw new ArgumentException("Error: ", nameof(guid));
 
             this._name = name;
-            this._guid = guid;
+            this._guid = VerifyStringUtil.CreateGuid();
             this._creation_date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             this._guid = VerifyStringUtil.CreateGuid();
             this._encrypted_password = EncryptionUtil.EncryptString(password);

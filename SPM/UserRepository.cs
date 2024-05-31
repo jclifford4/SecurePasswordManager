@@ -443,7 +443,7 @@ namespace UserRepository
 
                     var cmd = new MySqlCommand
                         ("UPDATE users SET userName=@NewUserName, passwordHash=@PasswordHash,"
-                          + " creationDate=@CreationDate WHERE userName=@UserName");
+                          + " creationDate=@CreationDate WHERE userName=@UserName", _connection);
                     cmd.Parameters.AddWithValue("@PasswordHash", user.UserName);
                     cmd.Parameters.AddWithValue("@NewUserName", newUserName);
                     cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);

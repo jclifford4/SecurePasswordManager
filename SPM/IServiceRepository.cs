@@ -4,8 +4,8 @@ public interface IServiceRepository
 {
     bool ServiceExists(string service, string username);
     bool GuidExists(string guid);
-    bool Add(Service service, string username);
-    bool Update(Service service, string name, string username);
+    bool Add(Service service, int userID);
+    bool UpdateServiceEncryption(Service service, int userID);
     bool Delete(Service service, string username);
     bool DeleteAll();
     int Count();

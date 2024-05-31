@@ -8,7 +8,6 @@ namespace ServiceRepository
 {
     public class ServiceRepositoryAccessor : IServiceRepository
     {
-        private readonly string _connectionString;
         private MySqlConnection _connection;
 
         public ServiceRepositoryAccessor(string user, string password, string dbname)
@@ -67,15 +66,11 @@ namespace ServiceRepository
             }
         }
 
-        public bool Add(Service service, string username)
+        public bool Add(Service service, int userID)
         {
-            // Get id from User table
-            var userRepoAccess = new UserRepositoryAcessor();
-            int userID = userRepoAccess.GetUserIDByUserName(username);
 
             if (userID == -1)
                 return false;
-
 
             try
             {
@@ -148,9 +143,31 @@ namespace ServiceRepository
             throw new NotImplementedException();
         }
 
-        public bool Update(Service service, string name, string usersname)
+        public bool UpdateServiceEncryption(Service service, int userID)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("UPDATE services SET encryptedPassword=@EncryptedPassword, creationDate=@CreationDate " +
+                    "WHERE userID=@UserID AND service=@Service", _connection);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                cmd.Parameters.AddWithValue("@Service", service.Name);
+                cmd.Parameters.AddWithValue("@EncryptedPassword", service.EncryptedPassword);
+                cmd.Parameters.AddWithValue("@CreationDate", service.CreationDate);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: ", ex.Message);
+                return false;
+            }
         }
     }
 }

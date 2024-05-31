@@ -1,5 +1,6 @@
 using Xunit;
 using SPM;
+using EncryptionUtility;
 using ServiceRepository;
 using Services;
 using UserRepository;
@@ -43,13 +44,17 @@ namespace SPM.Tests
         {
             // Arrange
             var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
-            var service = new Service("Netflix", VerifyStringUtil.CreateGuid(), "testpassword");
+            var service = new Service("Netflix", "testpassword");
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
 
             // Act
-            bool isAdded = serviceRepository.Add(service, "Initial");
+            int userID = userRepositoryAcessor.GetUserIDByUserName("initial");
+            bool isAdded = serviceRepository.Add(service, userID);
             bool isRestored = RestoreDB();
 
             // Assert
+            Assert.NotEqual(-1, userID);
             Assert.True(isAdded);
             Assert.True(isRestored);
 
@@ -60,14 +65,45 @@ namespace SPM.Tests
         {
             // Arrange
             var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
-            var service = new Service("Netflix", VerifyStringUtil.CreateGuid(), "testpassword");
+            var service = new Service("Netflix", "testpassword");
+            var userRepositoryAcessor = new UserRepositoryAcessor();
 
             // Act
-            bool isAdded = serviceRepository.Add(service, "testuser");
+            int userID = userRepositoryAcessor.GetUserIDByUserName("testuser");
+            bool isAdded = serviceRepository.Add(service, userID);
             bool isRestored = RestoreDB();
 
             // Assert
+            Assert.Equal(-1, userID);
             Assert.False(isAdded);
+            Assert.True(isRestored);
+
+        }
+
+        [Fact]
+        public void CreateServiceAndAddToTable_UpdateEncryptedPassword_ShouldSucceed()
+        {
+            // Arrange
+            var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
+            var service = new Service("Netflix", "testpassword");
+
+            string initialEncryption = service.EncryptedPassword;
+            string updatedEncryption = EncryptionUtil.EncryptString("newtestpassword");
+            var updatedService = new Service("Netflix", "newtestpassword");
+
+
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName("Initial");
+            bool isAdded = serviceRepository.Add(service, userID);
+            bool isUpdated = serviceRepository.UpdateServiceEncryption(updatedService, userID);
+            bool isRestored = RestoreDB();
+
+            // Assert
+            Assert.NotEqual(initialEncryption, updatedEncryption);
+            Assert.True(isAdded);
+            Assert.True(isUpdated);
             Assert.True(isRestored);
 
         }
