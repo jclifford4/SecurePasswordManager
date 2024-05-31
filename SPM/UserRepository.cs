@@ -402,6 +402,9 @@ namespace UserRepository
                         var cmd = new MySqlCommand("SELECT userID FROM users WHERE userName = @UserName", _connection);
                         cmd.Parameters.AddWithValue("@UserName", username);
                         var userID = cmd.ExecuteScalar();
+
+                        _connection.Close();
+
                         return userID != null ? Convert.ToInt32(userID) : -1;
                     }
                     catch (Exception ex)

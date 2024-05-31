@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 using MySql.Data.MySqlClient;
 using Services;
 using UserRepository;
-using ZstdSharp.Unsafe;
 
 namespace ServiceRepository
 {
+
     public class ServiceRepositoryAccessor : IServiceRepository
     {
         private MySqlConnection _connection;
@@ -98,11 +98,6 @@ namespace ServiceRepository
             }
         }
 
-        // public bool Add(Service service)
-        // {
-        //     throw new NotImplementedException();
-        // }
-
         public bool Backup(string host, string user, string password, string database, string backupPath)
         {
             throw new NotImplementedException();
@@ -110,17 +105,65 @@ namespace ServiceRepository
 
         public int Count()
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT Count(*) FROM services", _connection);
+                int rowCount = Convert.ToInt32(cmd.ExecuteScalar());
+
+                _connection.Close();
+
+                return rowCount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return -1;
+            }
         }
 
-        public bool Delete(Service service, string username)
+        public bool Delete(Service service, int userID)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("DELETE FROM services WHERE service=@Service AND userID=@UserID", _connection);
+                cmd.Parameters.AddWithValue("@Service", service.Name);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error deleting service " + ex.Message);
+                return false;
+            }
         }
 
-        public bool DeleteAll()
+        public bool DeleteAllByUserID(int userID)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("DELETE FROM services WHERE userID=@UserID", _connection);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error cannot delete all services by userID", ex.Message);
+                return false;
+            }
         }
 
         public string[] GetBackups(string backupPath)
@@ -130,7 +173,26 @@ namespace ServiceRepository
 
         public bool GuidExists(string guid)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM services WHERE guid=@Guid", _connection);
+
+                cmd.Parameters.AddWithValue("@Guid", guid);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                _connection.Close();
+
+                return count > 0;
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error: ", ex.Message);
+                return false;
+            }
         }
 
         public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
@@ -138,9 +200,27 @@ namespace ServiceRepository
             throw new NotImplementedException();
         }
 
-        public bool ServiceExists(string service, string username)
+        public bool ServiceExistsByUserID(Service service, int userID)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM services WHERE userID=@UserID AND service=@Service", _connection);
+                cmd.Parameters.AddWithValue("@Service", service.Name);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error finding service: ", ex.Message);
+                return false;
+            }
         }
 
         public bool UpdateServiceEncryption(Service service, int userID)

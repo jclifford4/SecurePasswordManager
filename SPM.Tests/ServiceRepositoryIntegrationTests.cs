@@ -5,8 +5,10 @@ using ServiceRepository;
 using Services;
 using UserRepository;
 using VerifyStringUtility;
+using Users;
 namespace SPM.Tests
 {
+    [Collection("SequentialTests")]
     public class ServiceRepositoryIntegrationTests
     {
         public ServiceRepositoryIntegrationTests()
@@ -61,7 +63,7 @@ namespace SPM.Tests
         }
 
         [Fact]
-        public void CreateServiceAndAddToTable_UserDoesNotExist_ShouldFil()
+        public void CreateServiceAndAddToTable_UserDoesNotExist_ShouldFail()
         {
             // Arrange
             var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
@@ -107,5 +109,92 @@ namespace SPM.Tests
             Assert.True(isRestored);
 
         }
+
+        [Fact]
+        public void CreateServiceAddToTable_DeleteUser_ShouldSucceed()
+        {
+            // Arrange
+            var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
+            var service = new Service("Hulu", "hulupassword");
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName("Initial");
+            bool isAdded = serviceRepository.Add(service, userID);
+            bool isDeleted = serviceRepository.Delete(service, userID);
+            bool isRestored = RestoreDB();
+
+            // Assert
+            Assert.NotEqual(-1, userID);
+            Assert.True(isAdded);
+            Assert.True(isDeleted);
+            Assert.True(isRestored);
+        }
+
+
+
+        [Fact]
+        public void CreateManyServicesFromSingleUserAddToTable_DeleteAllByUserID_ShouldSucceed()
+        {
+            // Arrange
+            var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
+            var service = new Service("Hulu", "hulupassword");
+            var service1 = new Service("Netflix", "netflixpassword");
+            var service2 = new Service("YouTube", "youtubepassword");
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName("Initial");
+            bool isAdded = serviceRepository.Add(service, userID);
+            bool isAdded1 = serviceRepository.Add(service1, userID);
+            bool isAdded2 = serviceRepository.Add(service2, userID);
+            bool isDeleted = serviceRepository.DeleteAllByUserID(userID);
+            bool isRestored = RestoreDB();
+
+            // Assert
+            Assert.NotEqual(-1, userID);
+            Assert.True(isAdded);
+            Assert.True(isAdded1);
+            Assert.True(isAdded2);
+            Assert.True(isDeleted);
+            Assert.True(isRestored);
+        }
+
+        [Fact]
+        public void CheckGuidExists_ShouldFail()
+        {
+            // Arrange
+            var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
+            string guid = "f51d4570-41b7-4442-aa4c-e3be0a2fd68d";
+
+            // Act
+            bool guidExists = serviceRepository.GuidExists(guid);
+
+            // Assert
+            Assert.False(guidExists);
+        }
+
+        [Fact]
+        public void AddService_CheckGuidExists_ShouldSucceed()
+        {
+            // Arrange
+            var serviceRepository = new ServiceRepositoryAccessor("testing", "bigpassword", "spmdb");
+            var service = new Service("testservice", "testpassword");
+            string guid = service.Guid;
+            var userRepositoryAcessor = new UserRepositoryAcessor();
+
+            // Act
+            int userID = userRepositoryAcessor.GetUserIDByUserName("Initial");
+            bool isAdded = serviceRepository.Add(service, userID);
+            bool guidExists = serviceRepository.GuidExists(guid);
+            bool isRestored = RestoreDB();
+
+            // Assert
+            Assert.NotEqual(-1, userID);
+            Assert.True(isAdded);
+            Assert.True(guidExists);
+            Assert.True(isRestored);
+        }
+
     }
 }
