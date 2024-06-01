@@ -27,6 +27,7 @@ namespace UserUtility
             return Guid.NewGuid().ToString();
         }
 
+        // TODO: User password is hashed in constructor.
         /// <summary>
         /// Creates a User and returns it.
         /// </summary>
@@ -40,7 +41,7 @@ namespace UserUtility
             // Create the user.
             // return the new
             string hashedPassword = HashPassword(userName, providedPassword);
-            User newUser = new User(userName, hashedPassword);
+            User newUser = new User(userName, providedPassword);
             return newUser;
 
 

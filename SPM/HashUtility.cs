@@ -8,7 +8,6 @@ namespace HashUtility
     public static class HashUtil
     {
 
-
     }
 
 
