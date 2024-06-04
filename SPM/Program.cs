@@ -11,6 +11,8 @@ namespace Main
     {
         public static void Main(string[] args)
         {
+            var userRepoAcess = new UserRepositoryAcessor();
+            var prompt = new Prompt();
 
             bool running = true;
             bool isFirstStarup = true;
@@ -21,15 +23,12 @@ namespace Main
                     Prompt.StartUp();
                     isFirstStarup = false;
                 }
-                Prompt.SPMIndicator();
-                Prompt.GetNonSensitiveConsoleText();
-                Prompt.PromptForUserName();
-                Prompt.GetSensitiveUsernameConsoleText();
-                Prompt.PromptForPassword();
-                Prompt.GetSensitivePasswordConsoleText();
-                Prompt.PromptForRepeatPassword();
-                Prompt.GetSensitivePasswordConsoleText();
 
+                Prompt.SPMIndicator();
+                running = prompt.ProgramOptions(Prompt.GetNonSensitiveConsoleText());
+
+                if (!running)
+                    break;
 
             }
 

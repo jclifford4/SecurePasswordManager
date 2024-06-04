@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualBasic;
 using Users;
 
 namespace UserUtility
@@ -20,6 +21,15 @@ namespace UserUtility
             PasswordHasher<string> hasher = new PasswordHasher<string>();
             string passwordHash = hasher.HashPassword(userName, providedPassword);
             return passwordHash;
+        }
+
+        public static string VerifyHashedPassword(string userName, string password, string hash)
+        {
+
+            var hasher = new PasswordHasher<string>();
+            var result = hasher.VerifyHashedPassword(userName, hash, password).ToString();
+            return result;
+
         }
 
         public static string GenerateGuidAsString()

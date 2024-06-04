@@ -80,6 +80,11 @@ namespace UserRepository
             return _privateDatabaseManager.UsernameExists(username);
         }
 
+        public bool MasterHashExists(string masterhash)
+        {
+            return _privateDatabaseManager.MasterHashExists(masterhash);
+        }
+
         public bool Add(User user)
         {
             return _privateDatabaseManager.Add(user);
@@ -623,6 +628,28 @@ namespace UserRepository
                 {
                     Console.WriteLine("The directory does not exist.");
                     return [];
+                }
+            }
+
+            internal bool MasterHashExists(string masterhash)
+            {
+                try
+                {
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand("SELECT COUNT(*) WHERE passwordHash=@PasswordHash", _connection);
+                    cmd.Parameters.AddWithValue("@PasswordHash", masterhash);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    _connection.Close();
+
+                    return count > 0;
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Master hash not found", ex.Message);
+                    return false;
                 }
             }
         }
