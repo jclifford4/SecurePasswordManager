@@ -107,6 +107,11 @@ namespace UserRepository
             return _privateDatabaseManager.Delete(user);
         }
 
+        public bool DeleteByUSerID(int userID)
+        {
+            return _privateDatabaseManager.DeleteByUserID(userID);
+        }
+
         public bool DeleteAll()
         {
             return _privateDatabaseManager.DeleteAll();
@@ -498,6 +503,27 @@ namespace UserRepository
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error deleting user " + ex.Message);
+                    return false;
+                }
+            }
+
+            internal bool DeleteByUserID(int userID)
+            {
+                try
+                {
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand("DELETE FROM users WHERE userID=@UserID", _connection);
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    cmd.ExecuteNonQuery();
+
+                    _connection.Close();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error deleting user: ", ex.Message);
                     return false;
                 }
             }

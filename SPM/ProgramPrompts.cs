@@ -421,7 +421,7 @@ namespace ProgramPrompts
                     Thread.Sleep(200);
                     Console.Write(GREEN + "Deleted!" + RESET);
                     Console.WriteLine();
-                    return true;
+                    return isDeleted;
                 }
                 else if (input.StartsWith("lsp", StringComparison.Ordinal))
                 {
@@ -483,11 +483,58 @@ namespace ProgramPrompts
                     Console.WriteLine(YELLOW + "----------------------" + RESET);
                     return true;
                 }
-
                 else if (input.StartsWith("bup", StringComparison.Ordinal))
                 {
                     //TODO:Implement DB backup
                     return true;
+                }
+                else if (input.StartsWith("rev", StringComparison.Ordinal))
+                {
+                    //TODO:Implement DB revert
+                    return true;
+                }
+                else if (input.StartsWith("kll", StringComparison.Ordinal))
+                {
+                    Console.WriteLine(YELLOW + "-----Delete User-----" + RESET);
+
+                    // Get userID
+                    int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+                    if (userID == -1)
+                        throw new ArgumentException("User not found");
+
+
+                    // Prompt master password
+                    PromptForMasterPassword();
+                    string password = HashUtil.ReadPassword();
+                    Console.WriteLine();
+
+                    // Get master hash
+                    var (isHash, hash) = userRepositoryAcessor.GetPasswordHash(userID);
+
+                    if (!isHash)
+                        throw new ArgumentException("Incorrect Master Password");
+
+                    // Verify master password
+                    if (!UserUtil.VerifyHashedPassword(username, password, hash))
+                        throw new ArgumentException("Incorrect Master Password");
+
+                    // Delete user and all associated data
+                    bool isDeleted = userRepositoryAcessor.DeleteByUSerID(userID);
+
+
+                    // Display Process
+                    Console.Write(BLUE + "Permanently Deleting User.." + RESET);
+                    Thread.Sleep(200);
+                    Console.Write(RED + "Deleted!" + RESET);
+                    Console.WriteLine();
+
+                    if (isDeleted)
+                        return false;
+                    else
+                        return true;
+
+
                 }
                 else
                 {
@@ -542,14 +589,15 @@ namespace ProgramPrompts
                 YELLOW + "cr" + RESET + " :" + BLUE + " Create a new user profile. Prompts user for a unique username and a master password\n" +
                 YELLOW + "cl" + RESET + " :" + BLUE + " Clear console\n" +
                 YELLOW + "lg" + RESET + " :" + BLUE + " Login to a user profile. Allows access to saved service passwords. Other commands are available\n" +
-                YELLOW + "rm" + RED + " {username}" + RESET + " :" + BLUE + " Delete User and all passwords\n" +
                       YELLOW + "\tnew" + RED + " {serivce name}" + RESET + " :" + BLUE + " Add a new service password\n" +
                       YELLOW + "\tupd" + RED + " {serivce name}" + RESET + " :" + BLUE + " Update a current service password\n" +
                       YELLOW + "\tdel" + RED + " {serivce name}" + RESET + " :" + BLUE + " Delete service from profile\n" +
                       YELLOW + "\tlsp" + RED + " {serivce name}" + RESET + " :" + BLUE + " List user password for 'service name'\n" +
                       YELLOW + "\tlsn" + RESET + " :" + BLUE + " List all user service names\n" +
                       YELLOW + "\tbup" + RESET + " :" + BLUE + " Backup Database\n" +
+                      YELLOW + "\trev" + RESET + " :" + BLUE + " Revert to most recent database save file\n" +
                       YELLOW + "\tout" + RESET + " :" + BLUE + " Log out of profile\n" +
+                      YELLOW + "\tkll" + RESET + " :" + BLUE + " Delete User and all passwords\n" +
                 YELLOW + "lu" + RESET + " :" + BLUE + " List all users.\n" +
                 YELLOW + " h" + RESET + " :" + BLUE + " Display commands\n" +
                 YELLOW + " q" + RESET + " :" + BLUE + " Exit program\n"
