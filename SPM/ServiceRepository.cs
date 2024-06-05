@@ -244,11 +244,11 @@ namespace ServiceRepository
                 var cmd = new MySqlCommand("SELECT COUNT(*) FROM services WHERE userID=@UserID AND service=@Service", _connection);
                 cmd.Parameters.AddWithValue("@Service", service.Name);
                 cmd.Parameters.AddWithValue("@UserID", userID);
-                cmd.ExecuteNonQuery();
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
 
                 _connection.Close();
 
-                return true;
+                return count > 0;
 
             }
             catch (Exception ex)
@@ -266,11 +266,11 @@ namespace ServiceRepository
                 var cmd = new MySqlCommand("SELECT COUNT(*) FROM services WHERE userID=@UserID AND service=@Service", _connection);
                 cmd.Parameters.AddWithValue("@Service", serviceName);
                 cmd.Parameters.AddWithValue("@UserID", userID);
-                cmd.ExecuteNonQuery();
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
 
                 _connection.Close();
 
-                return true;
+                return count > 0;
 
             }
             catch (Exception ex)

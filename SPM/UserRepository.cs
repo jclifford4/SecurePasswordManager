@@ -126,9 +126,33 @@ namespace UserRepository
         {
             return _privateDatabaseManager.Backup(host, user, password, database, backupPath);
         }
+
+        public bool BackupWithEnvironment()
+        {
+            return _privateDatabaseManager.Backup
+                (
+                    Environment.GetEnvironmentVariable("HOST"),
+                    Environment.GetEnvironmentVariable("USER"),
+                    Environment.GetEnvironmentVariable("PASSWORD"),
+                    Environment.GetEnvironmentVariable("DATABASE"),
+                    Environment.GetEnvironmentVariable("BACKUP_PATH")
+                );
+        }
         public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
         {
             return _privateDatabaseManager.Restore(host, user, password, database, backupPath, fileName);
+        }
+
+        public bool Restore(string fileName)
+        {
+            return _privateDatabaseManager.Restore(
+                Environment.GetEnvironmentVariable("HOST"),
+                Environment.GetEnvironmentVariable("USER"),
+                Environment.GetEnvironmentVariable("PASSWORD"),
+                Environment.GetEnvironmentVariable("DATABASE"),
+                Environment.GetEnvironmentVariable("BACKUP_PATH"),
+                fileName
+                );
         }
 
         public string[] GetBackups(string backupPath)
@@ -149,6 +173,11 @@ namespace UserRepository
         public List<string> GetAllUsersAsListOfStrings()
         {
             return _privateDatabaseManager.GetAllUsers();
+        }
+
+        public string[] GetAllBackups()
+        {
+            return _privateDatabaseManager.GetBackups(Environment.GetEnvironmentVariable("BACKUP_PATH"));
         }
 
 
@@ -651,19 +680,30 @@ namespace UserRepository
 
             internal string[] GetBackups(string backupPath)
             {
-                string directoryPath = backupPath;
-
-                // Check if the directory exists
-                if (Directory.Exists(directoryPath))
+                try
                 {
-                    // Get all files in the directory and its subdirectories
-                    string[] fileNames = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
 
-                    return fileNames;
+                    string directoryPath = backupPath;
+
+                    // Check if the directory exists
+                    if (Directory.Exists(directoryPath))
+                    {
+                        // Get all files in the directory and its subdirectories
+                        string[] fileNames = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+
+                        return fileNames;
+                    }
+
+
+
+                    throw new Exception("The directory does not exist.");
+
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine("The directory does not exist.");
+
+                    Console.WriteLine(ex.Message);
                     return [];
                 }
             }

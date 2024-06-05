@@ -262,6 +262,10 @@ namespace ProgramPrompts
                                 break;
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine(RED + "\nLogin Error" + RESET);
+                    }
                     Console.WriteLine();
                     break;
 
@@ -322,31 +326,33 @@ namespace ProgramPrompts
                     PromptForRepeatPassword();
                     string repeatPassword = HashUtil.ReadPassword();
 
-                    // Create service
-                    Service service;
+
                     if (repeatPassword.Equals(password))
-                        service = new Service(serviceName, password);
+                    {
+                        var service = new Service(serviceName, password);
+                        // Get userID
+
+                        int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+                        // Check if service exists for this user
+                        if (serviceRepoAccessor.ServiceExistsByUserID(service, userID))
+                            throw new SimpleException("Service already exists, use 'upd' command instead");
+
+                        // Add to DB
+                        if (!serviceRepoAccessor.Add(service, userID))
+                            throw new SimpleException($"Error Processing service: \"{service.Name}\"");
+
+                        // Display Process
+                        Console.WriteLine(BLUE + "Encrypting.." + RESET);
+                        Thread.Sleep(200);
+                        Console.Write(BLUE + "Saving.." + RESET);
+                        Thread.Sleep(200);
+                        Console.Write(GREEN + "Saved!" + RESET);
+                        Console.WriteLine();
+                    }
                     else
-                        throw new ArgumentException("Password mismatch");
+                        throw new SimpleException("Password Mismatch");
 
-                    // Get userID
-                    int userID = userRepositoryAcessor.GetUserIDByUserName(username);
-
-                    // Check if service exists for this user
-                    if (serviceRepoAccessor.ServiceExistsByUserID(service, userID))
-                        throw new ArgumentException("Service already exists, use 'upd' command instead");
-
-                    // Add to DB
-                    if (!serviceRepoAccessor.Add(service, userID))
-                        throw new ArgumentException($"Error Processing service: \"{service.Name}\"");
-
-                    // Display Process
-                    Console.Write(BLUE + "Encrypting.." + RESET);
-                    Thread.Sleep(200);
-                    Console.Write(BLUE + "Saving.." + RESET);
-                    Thread.Sleep(200);
-                    Console.Write(GREEN + "Saved!" + RESET);
-                    Console.WriteLine();
                     return true;
                 }
                 else if (input.StartsWith("upd", StringComparison.Ordinal))
@@ -362,31 +368,34 @@ namespace ProgramPrompts
                     PromptForRepeatPassword();
                     string repeatPassword = HashUtil.ReadPassword();
 
-                    // Create service
-                    Service service;
                     if (repeatPassword.Equals(password))
-                        service = new Service(serviceName, password);
+                    {
+
+                        var service = new Service(serviceName, password);
+                        // Get userID
+                        int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+                        // Check if service exists for this user
+                        if (!serviceRepoAccessor.ServiceExistsByUserID(service, userID))
+                            throw new SimpleException("Service does not exists, use 'new' command instead");
+
+                        // Add to DB
+                        if (!serviceRepoAccessor.UpdateServiceEncryption(service, userID))
+                            throw new SimpleException($"Error updating: \"{service.Name}\"");
+
+
+                        // Display Process
+                        Console.Write(BLUE + "Encrypting.." + RESET);
+                        Thread.Sleep(200);
+                        Console.Write(BLUE + "Updating.." + RESET);
+                        Thread.Sleep(200);
+                        Console.Write(GREEN + "Updated!" + RESET);
+                        Console.WriteLine();
+                    }
                     else
-                        throw new ArgumentException("Password mismatch");
+                        Console.WriteLine("\n" + RED + "Password mismatch" + RESET);
 
-                    // Get userID
-                    int userID = userRepositoryAcessor.GetUserIDByUserName(username);
 
-                    // Check if service exists for this user
-                    if (!serviceRepoAccessor.ServiceExistsByUserID(service, userID))
-                        throw new ArgumentException("Service does not exists, use 'new' command instead");
-
-                    // Add to DB
-                    if (!serviceRepoAccessor.UpdateServiceEncryption(service, userID))
-                        throw new ArgumentException($"Error Processing service: \"{service.Name}\"");
-
-                    // Display Process
-                    Console.Write(BLUE + "Encrypting.." + RESET);
-                    Thread.Sleep(200);
-                    Console.Write(BLUE + "Updating.." + RESET);
-                    Thread.Sleep(200);
-                    Console.Write(GREEN + "Updated!" + RESET);
-                    Console.WriteLine();
                     return true;
                 }
                 else if (input.StartsWith("del", StringComparison.Ordinal))
@@ -407,11 +416,11 @@ namespace ProgramPrompts
                     var (isHash, hash) = userRepositoryAcessor.GetPasswordHash(userID);
 
                     if (!isHash)
-                        throw new ArgumentException("Incorrect Master Password");
+                        throw new SimpleException("Incorrect Master Password");
 
                     // Verify master password
                     if (!UserUtil.VerifyHashedPassword(username, password, hash))
-                        throw new ArgumentException("Incorrect Master Password");
+                        throw new SimpleException("Incorrect Master Password");
 
                     // Delete service
                     bool isDeleted = serviceRepoAccessor.DeleteByServiceName(serviceName, userID);
@@ -421,7 +430,7 @@ namespace ProgramPrompts
                     Thread.Sleep(200);
                     Console.Write(GREEN + "Deleted!" + RESET);
                     Console.WriteLine();
-                    return isDeleted;
+                    return !isDeleted;
                 }
                 else if (input.StartsWith("lsp", StringComparison.Ordinal))
                 {
@@ -440,22 +449,22 @@ namespace ProgramPrompts
                     var (isHash, hash) = userRepositoryAcessor.GetPasswordHash(userID);
 
                     if (!isHash)
-                        throw new ArgumentException("Incorrect Master Password");
+                        throw new SimpleException("Incorrect Master Password");
 
                     // Verify master password
                     if (!UserUtil.VerifyHashedPassword(username, password, hash))
-                        throw new ArgumentException("Incorrect Master Password");
+                        throw new SimpleException("Incorrect Master Password");
 
 
                     // Check service exists for user
                     if (!serviceRepoAccessor.ServiceNameExistsByUserID(serviceName, userID))
-                        throw new ArgumentException($"Service does not exist: {serviceName}");
+                        throw new SimpleException($"Service does not exist: \"{serviceName}\"");
 
                     // Get the encrypted password
                     var (isEncrypted, encrypted) = serviceRepoAccessor.GetEncryptedByUserID(serviceName, userID);
 
                     if (!isEncrypted)
-                        throw new ArgumentException("Could not get password");
+                        throw new SimpleException("Could not get password");
 
                     Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
                     Console.WriteLine(GREEN + $"Password: {EncryptionUtil.DecryptString(encrypted)}");
@@ -474,18 +483,13 @@ namespace ProgramPrompts
 
                     // Verify list
                     if (servicesList.Count == 0)
-                        throw new ArgumentException("Error: Empty service list");
+                        throw new SimpleException("Empty service list");
                     Console.WriteLine(YELLOW + "-----Service List-----" + RESET);
                     foreach (var pair in servicesList)
                     {
                         Console.WriteLine(BLUE + $"{pair.Item1.PadRight(15)}: {pair.Item2.PadRight(20)}" + RESET);
                     }
                     Console.WriteLine(YELLOW + "----------------------" + RESET);
-                    return true;
-                }
-                else if (input.StartsWith("bup", StringComparison.Ordinal))
-                {
-                    //TODO:Implement DB backup
                     return true;
                 }
                 else if (input.StartsWith("rev", StringComparison.Ordinal))
@@ -501,7 +505,7 @@ namespace ProgramPrompts
                     int userID = userRepositoryAcessor.GetUserIDByUserName(username);
 
                     if (userID == -1)
-                        throw new ArgumentException("User not found");
+                        throw new SimpleException("User not found");
 
 
                     // Prompt master password
@@ -513,11 +517,11 @@ namespace ProgramPrompts
                     var (isHash, hash) = userRepositoryAcessor.GetPasswordHash(userID);
 
                     if (!isHash)
-                        throw new ArgumentException("Incorrect Master Password");
+                        throw new SimpleException("Incorrect Master Password");
 
                     // Verify master password
                     if (!UserUtil.VerifyHashedPassword(username, password, hash))
-                        throw new ArgumentException("Incorrect Master Password");
+                        throw new SimpleException("Incorrect Master Password");
 
                     // Delete user and all associated data
                     bool isDeleted = userRepositoryAcessor.DeleteByUSerID(userID);
@@ -536,14 +540,58 @@ namespace ProgramPrompts
 
 
                 }
+                else if (input.StartsWith("bup", StringComparison.Ordinal))
+                {
+                    Console.WriteLine(YELLOW + "-----Database Backup-----" + RESET);
+                    if (!userRepositoryAcessor.BackupWithEnvironment())
+                        throw new SimpleException("Could not backup passwords");
+
+                    Console.Write(BLUE + "Creating backup.." + RESET);
+                    Thread.Sleep(200);
+                    Console.Write(GREEN + "Backup saved!" + RESET);
+                    Thread.Sleep(200);
+                    Console.WriteLine("\n" + YELLOW + $"Location: {Environment.GetEnvironmentVariable("BACKUP_PATH")}" + RESET);
+                    Console.WriteLine(YELLOW + "-------------------------" + RESET);
+                    return true;
+
+                }
+                else if (input.StartsWith("rev", StringComparison.Ordinal))
+                {
+                    Console.WriteLine(YELLOW + "-----Database Restore-----" + RESET);
+                    var backupsList = userRepositoryAcessor.GetAllBackups();
+
+                    if (backupsList.Length <= 0)
+                        throw new SimpleException("No backups exist.");
+
+                    foreach (var backup in backupsList)
+                    {
+                        Console.WriteLine($"Backup with {backup}");
+                    }
+
+                    // Ask for file to backup with
+                    Console.WriteLine(BLUE + "Paste the file name to revert back. Press enter." + RESET);
+                    string fileName = GetSensitiveConsoleText();
+
+                    if (!userRepositoryAcessor.Restore(fileName))
+                        throw new SimpleException("Error reverting datbase");
+
+                    return true;
+
+                }
                 else
                 {
-                    throw new Exception(RED + "Incomplete command" + RESET);
+                    throw new SimpleException(RED + $"{input} is not a command" + RESET);
                 }
+            }
+            catch (SimpleException ex)
+            {
+                // Console.WriteLine("\n" + RED + ex + RESET);
+                HandleException(ex);
+                return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex + RESET);
+                HandleException(ex);
                 return true;
             }
 
@@ -559,7 +607,7 @@ namespace ProgramPrompts
                 PromptForUsername();
                 string username = GetSensitiveUsernameConsoleText();
                 if (!userRepoAcess.UsernameExists(username))
-                    throw new Exception();
+                    throw new SimpleException($"Username {username} does not exist");
 
                 // Get comparison password
                 PromptForPassword();
@@ -574,13 +622,29 @@ namespace ProgramPrompts
                     return (UserUtil.VerifyHashedPassword(username, password, hash), username);
                 }
 
-                return (false, username);
+                throw new SimpleException("User does not exist");
+                // return (false, username);
             }
-            catch (Exception)
+            catch (SimpleException ex)
             {
-                Console.WriteLine(RED + "Login failed: " + RESET);
+                HandleException(ex);
                 return (false, string.Empty);
             }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+                return (false, string.Empty);
+            }
+        }
+
+        internal static void HandleException(Exception ex)
+        {
+            // Log full exception details to a secure log file
+            File.WriteAllText("error_log.txt", ex.ToString());
+
+            // Display simplified message to the user
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine("StackTrace: [Stack trace hidden]");
         }
 
         internal static void ShowHelpCommands()

@@ -1,0 +1,1 @@
+SimpleException:  rev is not a command
