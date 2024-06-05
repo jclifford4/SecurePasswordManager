@@ -2,6 +2,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using DBServer;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Common;
 using Users;
 
 namespace UserRepository
@@ -85,6 +86,11 @@ namespace UserRepository
             return _privateDatabaseManager.MasterHashExists(masterhash);
         }
 
+        public (bool, string) GetPasswordHash(int userID)
+        {
+            return _privateDatabaseManager.GetPasswordHash(userID);
+        }
+
         public bool Add(User user)
         {
             return _privateDatabaseManager.Add(user);
@@ -145,7 +151,7 @@ namespace UserRepository
             private string _database;
             private string _uid;
             private string _password;
-            private string _passwordHash;
+            // private string _passwordHash;
 
             //Constructor
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -168,17 +174,19 @@ namespace UserRepository
             /// </summary>
             private void Initialize()
             {
-                _server = "localhost";
-                _database = "spmdb";
-                _uid = "testing";
-                _password = "bigpassword";
-                string connectionString;
-                connectionString = "SERVER=" + _server + ";" + "DATABASE=" +
-                _database + ";" + "UID=" + _uid + ";" + "PASSWORD=" + _password + ";";
+                // _server = "localhost";
+                // _database = "spmdb";
+                // _uid = "testing";
+                // _password = "bigpassword";
 
-                // TODO: Create connection string 
-                // Server server = new Server(dbname, hostname, user, password);
-                // string conString = server.ConnectionString;
+                string? USER = Environment.GetEnvironmentVariable("USER");
+                string? PASSWORD = Environment.GetEnvironmentVariable("PASSWORD");
+                const string HOST = "localhost";
+                string? DATABASE = Environment.GetEnvironmentVariable("DATABASE");
+                string? BACKUP_PATH = Environment.GetEnvironmentVariable("BACKUP_PATH");
+
+                string connectionString = "SERVER=" + HOST + ";" + "DATABASE=" +
+                DATABASE + ";" + "UID=" + USER + ";" + "PASSWORD=" + PASSWORD + ";";
 
                 _connection = new MySqlConnection(connectionString);
             }
@@ -650,6 +658,39 @@ namespace UserRepository
                 {
                     Console.WriteLine("Master hash not found", ex.Message);
                     return false;
+                }
+            }
+
+            internal (bool, string) GetPasswordHash(int userID)
+            {
+                try
+                {
+
+                    _connection.Open();
+
+                    var cmd = new MySqlCommand("SELECT passwordHash FROM users WHERE userID=@UserID", _connection);
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    var reader = cmd.ExecuteReader();
+                    string result = string.Empty;
+                    if (reader.Read())
+                    {
+                        result = reader["passwordHash"].ToString();
+                        if (string.IsNullOrWhiteSpace(result))
+                        {
+                            throw new Exception("Error getting hash");
+                        }
+
+
+                    }
+                    reader.Close();
+                    _connection.Close();
+
+                    return (true, result);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return (false, string.Empty);
                 }
             }
         }

@@ -23,12 +23,16 @@ namespace UserUtility
             return passwordHash;
         }
 
-        public static string VerifyHashedPassword(string userName, string password, string hash)
+        public static bool VerifyHashedPassword(string userName, string password, string hash)
         {
 
             var hasher = new PasswordHasher<string>();
             var result = hasher.VerifyHashedPassword(userName, hash, password).ToString();
-            return result;
+
+            if (result.Equals("Success"))
+                return true;
+
+            return false;
 
         }
 

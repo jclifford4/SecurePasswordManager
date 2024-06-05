@@ -11,13 +11,19 @@ namespace Main
     {
         public static void Main(string[] args)
         {
-            var userRepoAcess = new UserRepositoryAcessor();
             var prompt = new Prompt();
 
             bool running = true;
             bool isFirstStarup = true;
             while (running)
             {
+                Console.WriteLine(Environment.GetEnvironmentVariable("ENCRYPTION_KEY"));
+                Console.WriteLine(Environment.GetEnvironmentVariable("HOST"));
+                Console.WriteLine(Environment.GetEnvironmentVariable("USER"));
+                Console.WriteLine(Environment.GetEnvironmentVariable("PASSWORD"));
+                Console.WriteLine(Environment.GetEnvironmentVariable("DATABASE"));
+                Console.WriteLine(Environment.GetEnvironmentVariable("BACKUP_PATH"));
+
                 if (isFirstStarup)
                 {
                     Prompt.StartUp();

@@ -24,6 +24,20 @@ namespace ServiceRepository
             _connection = new MySqlConnection(connectionString);
         }
 
+        public ServiceRepositoryAccessor()
+        {
+            string? USER = Environment.GetEnvironmentVariable("USER");
+            string? PASSWORD = Environment.GetEnvironmentVariable("PASSWORD");
+            const string HOST = "localhost";
+            string? DATABASE = Environment.GetEnvironmentVariable("DATABASE");
+            string? BACKUP_PATH = Environment.GetEnvironmentVariable("BACKUP_PATH");
+
+            string connectionString = "SERVER=" + HOST + ";" + "DATABASE=" +
+            DATABASE + ";" + "UID=" + USER + ";" + "PASSWORD=" + PASSWORD + ";";
+
+            _connection = new MySqlConnection(connectionString);
+        }
+
         private bool OpenConnection()
         {
             try
@@ -144,6 +158,27 @@ namespace ServiceRepository
                 return false;
             }
         }
+        public bool DeleteByServiceName(string serviceName, int userID)
+        {
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("DELETE FROM services WHERE service=@Service AND userID=@UserID", _connection);
+                cmd.Parameters.AddWithValue("@Service", serviceName);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error deleting service " + ex.Message);
+                return false;
+            }
+        }
 
         public bool DeleteAllByUserID(int userID)
         {
@@ -220,6 +255,94 @@ namespace ServiceRepository
             {
                 Console.WriteLine("Error finding service: ", ex.Message);
                 return false;
+            }
+        }
+        public bool ServiceNameExistsByUserID(string serviceName, int userID)
+        {
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM services WHERE userID=@UserID AND service=@Service", _connection);
+                cmd.Parameters.AddWithValue("@Service", serviceName);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                cmd.ExecuteNonQuery();
+
+                _connection.Close();
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error finding service: ", ex.Message);
+                return false;
+            }
+        }
+        public (bool, string) GetEncryptedByUserID(string serviceName, int userID)
+        {
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT encryptedPassword FROM services WHERE userID=@UserID AND service=@Service", _connection);
+                cmd.Parameters.AddWithValue("@Service", serviceName);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                var reader = cmd.ExecuteReader();
+                string result = string.Empty;
+                if (reader.Read())
+                {
+                    result = reader["encryptedPassword"].ToString();
+
+                    if (string.IsNullOrWhiteSpace(result))
+                    {
+                        throw new Exception("Error getting encrypted password");
+                    }
+                }
+
+                reader.Close();
+                _connection.Close();
+
+                return (true, result);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error finding service: ", ex.Message);
+                return (false, string.Empty);
+            }
+        }
+
+        public List<(string, string)> GetAllServicesByUserID(int userID)
+        {
+            try
+            {
+                var services = new List<(string, string)>();
+
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT service, encryptedPassword FROM services WHERE userID=@UserID", _connection);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    string serviceName = reader["service"].ToString();
+                    string encrypted = reader["encryptedPassword"].ToString();
+
+                    if (string.IsNullOrWhiteSpace(serviceName) || string.IsNullOrWhiteSpace(encrypted))
+                        throw new Exception("Error getting service list");
+
+                    services.Add((serviceName, encrypted));
+                }
+
+                return services;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<(string, string)>();
             }
         }
 
