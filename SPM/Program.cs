@@ -9,6 +9,11 @@ namespace Main
 {
     public class Program
     {
+
+        // TODO: First time startup to set env vars
+        // TODO: Add backup command for user after login
+        // TODO: Tidy error messages for user
+        // TODO: Clean up code
         public static void Main(string[] args)
         {
             var prompt = new Prompt();

@@ -230,6 +230,20 @@ namespace ProgramPrompts
                     ClearConsole();
                     break;
 
+                case "lu":
+                    ClearConsole();
+                    var userRepositoryAcessor = new UserRepositoryAcessor();
+                    var usersList = userRepositoryAcessor.GetAllUsersAsListOfStrings();
+
+                    Console.WriteLine(YELLOW + "-----User List-----" + RESET);
+                    foreach (var user in usersList)
+                    {
+                        Console.WriteLine(BLUE + user + RESET);
+                    }
+                    Console.WriteLine(YELLOW + "-------------------" + RESET);
+                    Console.WriteLine();
+                    break;
+
                 case "lg":
                     ClearConsole();
                     var (isLoggedIn, username) = Login();
@@ -267,13 +281,10 @@ namespace ProgramPrompts
             Console.Write(BLUE + "[SPM~" + RESET + YELLOW + $"{username}" + RED + "~" + BLUE + "] " + RESET);
         }
 
-        //TODO: Grab environment variables
         public bool LoginOptions(string username, string input)
         {
-
             try
             {
-                //TODO: Use environment variables that user sets
                 var serviceRepoAccessor = new ServiceRepositoryAccessor();
                 var userRepositoryAcessor = new UserRepositoryAcessor();
 
@@ -472,6 +483,12 @@ namespace ProgramPrompts
                     Console.WriteLine(YELLOW + "----------------------" + RESET);
                     return true;
                 }
+
+                else if (input.StartsWith("bup", StringComparison.Ordinal))
+                {
+                    //TODO:Implement DB backup
+                    return true;
+                }
                 else
                 {
                     throw new Exception(RED + "Incomplete command" + RESET);
@@ -525,11 +542,13 @@ namespace ProgramPrompts
                 YELLOW + "cr" + RESET + " :" + BLUE + " Create a new user profile. Prompts user for a unique username and a master password\n" +
                 YELLOW + "cl" + RESET + " :" + BLUE + " Clear console\n" +
                 YELLOW + "lg" + RESET + " :" + BLUE + " Login to a user profile. Allows access to saved service passwords. Other commands are available\n" +
+                YELLOW + "rm" + RED + " {username}" + RESET + " :" + BLUE + " Delete User and all passwords\n" +
                       YELLOW + "\tnew" + RED + " {serivce name}" + RESET + " :" + BLUE + " Add a new service password\n" +
                       YELLOW + "\tupd" + RED + " {serivce name}" + RESET + " :" + BLUE + " Update a current service password\n" +
                       YELLOW + "\tdel" + RED + " {serivce name}" + RESET + " :" + BLUE + " Delete service from profile\n" +
                       YELLOW + "\tlsp" + RED + " {serivce name}" + RESET + " :" + BLUE + " List user password for 'service name'\n" +
                       YELLOW + "\tlsn" + RESET + " :" + BLUE + " List all user service names\n" +
+                      YELLOW + "\tbup" + RESET + " :" + BLUE + " Backup Database\n" +
                       YELLOW + "\tout" + RESET + " :" + BLUE + " Log out of profile\n" +
                 YELLOW + "lu" + RESET + " :" + BLUE + " List all users.\n" +
                 YELLOW + " h" + RESET + " :" + BLUE + " Display commands\n" +
@@ -595,6 +614,7 @@ namespace ProgramPrompts
 
 
         }
+
         internal static bool isValidSPMNonSensitiveInput(string? input)
         {
             if (string.IsNullOrWhiteSpace(input))

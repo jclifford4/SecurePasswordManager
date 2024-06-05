@@ -4,6 +4,7 @@ using DBServer;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 using Users;
+using ZstdSharp.Unsafe;
 
 namespace UserRepository
 {
@@ -41,9 +42,9 @@ namespace UserRepository
         /// Select statement from users table
         /// </summary>
         /// <returns>list[list[UserID], list[UserName], list[PasswordHash]]</returns>
-        public List<string>[] Select()
+        public List<string> Select()
         {
-            return _privateDatabaseManager.Select();
+            return _privateDatabaseManager.GetAllUsers();
         }
 
         /// <summary>
@@ -140,6 +141,11 @@ namespace UserRepository
             return _privateDatabaseManager.GetUserIDByUserName(userName);
         }
 
+        public List<string> GetAllUsersAsListOfStrings()
+        {
+            return _privateDatabaseManager.GetAllUsers();
+        }
+
 
         /// <summary>
         /// Private Database Manager class
@@ -147,10 +153,10 @@ namespace UserRepository
         class PrivateRepositoryAccesor
         {
             private MySqlConnection _connection;
-            private string _server;
-            private string _database;
-            private string _uid;
-            private string _password;
+            // private string _server;
+            // private string _database;
+            // private string _uid;
+            // private string _password;
             // private string _passwordHash;
 
             //Constructor
@@ -302,42 +308,39 @@ namespace UserRepository
             }
 
             /// <summary>
-            /// Request a select statement to database
+            /// Request all usernames
             /// </summary>
             /// <returns>List<string></returns>
-            public List<string>[] Select()
+            public List<string> GetAllUsers()
             {
-                string query = "SELECT * FROM users";
 
-                List<string>[] list = new List<string>[3];
-                list[0] = new List<string>();   // userid
-                list[1] = new List<string>();   // usernames
-                list[2] = new List<string>();   // passwordhashes
-
-
-                if (this.OpenConnection() == true)
+                try
                 {
-                    MySqlCommand cmd = new MySqlCommand(query, _connection);
+                    _connection.Open();
 
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                    while (dataReader.Read())
+                    var cmd = new MySqlCommand("SELECT userName FROM users", _connection);
+                    var reader = cmd.ExecuteReader();
+                    var userList = new List<string>();
+                    while (reader.Read())
                     {
-                        list[0].Add(dataReader["userID"] + "");
-                        list[1].Add(dataReader["userName"] + "");
-                        list[2].Add(dataReader["passwordHash"] + "");
+                        string username = reader["userName"].ToString();
+                        if (string.IsNullOrEmpty(username))
+                            throw new ArgumentException("Error fetching users");
+
+                        userList.Add(username);
                     }
 
-                    dataReader.Close();
+                    reader.Close();
+                    _connection.Close();
 
-                    this.CloseConnection();
-
-                    return list;
+                    return userList;
                 }
-                else
+                catch (Exception ex)
                 {
-                    return list;
+                    Console.WriteLine("Error fetching users", ex.Message);
+                    return new List<string>();
                 }
+
             }
 
             /// <summary>
