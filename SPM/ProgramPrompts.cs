@@ -86,11 +86,16 @@ namespace ProgramPrompts
                 if (isValidInput(input))
                     return input;
 
-                throw new ArgumentException("Invalid Input");
+                throw new SimpleException("Invalid Input");
+            }
+            catch (SimpleException ex)
+            {
+                HandleException(ex);
+                return "error";
             }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex.Message + RESET);
+                HandleException(ex);
                 return "error";
             }
         }
@@ -213,8 +218,11 @@ namespace ProgramPrompts
         //TODO: More commands.
         public bool ProgramOptions(string input)
         {
+
             switch (input)
             {
+                case "":
+                    break;
                 case "h":
                     ClearConsole();
                     ShowHelpCommands();
@@ -274,6 +282,7 @@ namespace ProgramPrompts
                     return false;
 
                 default:
+                    Console.WriteLine(RED + $"{input} is not a valid command");
                     break;
             }
 
@@ -492,11 +501,6 @@ namespace ProgramPrompts
                     Console.WriteLine(YELLOW + "----------------------" + RESET);
                     return true;
                 }
-                else if (input.StartsWith("rev", StringComparison.Ordinal))
-                {
-                    //TODO:Implement DB revert
-                    return true;
-                }
                 else if (input.StartsWith("kll", StringComparison.Ordinal))
                 {
                     Console.WriteLine(YELLOW + "-----Delete User-----" + RESET);
@@ -560,12 +564,13 @@ namespace ProgramPrompts
                     Console.WriteLine(YELLOW + "-----Database Restore-----" + RESET);
                     var backupsList = userRepositoryAcessor.GetAllBackups();
 
+
                     if (backupsList.Length <= 0)
                         throw new SimpleException("No backups exist.");
 
                     foreach (var backup in backupsList)
                     {
-                        Console.WriteLine($"Backup with {backup}");
+                        Console.WriteLine($"{backup}");
                     }
 
                     // Ask for file to backup with
@@ -574,6 +579,13 @@ namespace ProgramPrompts
 
                     if (!userRepositoryAcessor.Restore(fileName))
                         throw new SimpleException("Error reverting datbase");
+
+
+                    if (!userRepositoryAcessor.UsernameExists(username))
+                    {
+                        Console.WriteLine(RED + $"Logging out, \"{username}\" was created after this restore" + RESET);
+                        return false;
+                    }
 
                     return true;
 

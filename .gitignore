@@ -11,6 +11,7 @@
 *.sln.docstates
 *.sql
 *.vscode
+*.txt
     
 
 # User-specific files (MonoDevelop/Xamarin Studio)

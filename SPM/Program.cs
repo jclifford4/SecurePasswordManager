@@ -36,6 +36,21 @@ namespace Main
                 }
 
                 Prompt.SPMIndicator();
+
+                // if (Console.KeyAvailable)
+                // {
+
+                //     var keyInfo = Console.ReadKey(intercept: true);
+
+                //     // Check if the Control key and L key are pressed simultaneously
+                //     if ((keyInfo.Modifiers & ConsoleModifiers.Control) != 0 && keyInfo.Key == ConsoleKey.L)
+                //     {
+                //         Console.Clear();
+                //         Prompt.SPMIndicator();
+                //         continue;
+                //     }
+                // }
+
                 running = prompt.ProgramOptions(Prompt.GetNonSensitiveConsoleText());
 
                 if (!running)
