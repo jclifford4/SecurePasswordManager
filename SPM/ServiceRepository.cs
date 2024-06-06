@@ -26,11 +26,11 @@ namespace ServiceRepository
 
         public ServiceRepositoryAccessor()
         {
-            string? USER = Environment.GetEnvironmentVariable("USER");
-            string? PASSWORD = Environment.GetEnvironmentVariable("PASSWORD");
+            string? USER = Environment.GetEnvironmentVariable("MYSQL_USER");
+            string? PASSWORD = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
             const string HOST = "localhost";
-            string? DATABASE = Environment.GetEnvironmentVariable("DATABASE");
-            string? BACKUP_PATH = Environment.GetEnvironmentVariable("BACKUP_PATH");
+            string? DATABASE = Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME");
+            string? BACKUP_PATH = Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH");
 
             string connectionString = "SERVER=" + HOST + ";" + "DATABASE=" +
             DATABASE + ";" + "UID=" + USER + ";" + "PASSWORD=" + PASSWORD + ";";

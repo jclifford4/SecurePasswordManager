@@ -554,7 +554,7 @@ namespace ProgramPrompts
                     Thread.Sleep(200);
                     Console.Write(GREEN + "Backup saved!" + RESET);
                     Thread.Sleep(200);
-                    Console.WriteLine("\n" + YELLOW + $"Location: {Environment.GetEnvironmentVariable("BACKUP_PATH")}" + RESET);
+                    Console.WriteLine("\n" + YELLOW + $"Location: {Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH")}" + RESET);
                     Console.WriteLine(YELLOW + "-------------------------" + RESET);
                     return true;
 

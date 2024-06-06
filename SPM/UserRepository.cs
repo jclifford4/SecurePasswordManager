@@ -129,14 +129,7 @@ namespace UserRepository
 
         public bool BackupWithEnvironment()
         {
-            return _privateDatabaseManager.Backup
-                (
-                    Environment.GetEnvironmentVariable("HOST"),
-                    Environment.GetEnvironmentVariable("USER"),
-                    Environment.GetEnvironmentVariable("PASSWORD"),
-                    Environment.GetEnvironmentVariable("DATABASE"),
-                    Environment.GetEnvironmentVariable("BACKUP_PATH")
-                );
+            return _privateDatabaseManager.BackupWithEnvironment();
         }
         public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
         {
@@ -146,11 +139,11 @@ namespace UserRepository
         public bool Restore(string fileName)
         {
             return _privateDatabaseManager.Restore(
-                Environment.GetEnvironmentVariable("HOST"),
-                Environment.GetEnvironmentVariable("USER"),
-                Environment.GetEnvironmentVariable("PASSWORD"),
-                Environment.GetEnvironmentVariable("DATABASE"),
-                Environment.GetEnvironmentVariable("BACKUP_PATH"),
+                Environment.GetEnvironmentVariable("MYSQL_HOST"),
+                Environment.GetEnvironmentVariable("MYSQL_USER"),
+                Environment.GetEnvironmentVariable("MYSQL_PASSWORD"),
+                Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME"),
+                Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH"),
                 fileName
                 );
         }
@@ -177,7 +170,7 @@ namespace UserRepository
 
         public string[] GetAllBackups()
         {
-            return _privateDatabaseManager.GetBackups(Environment.GetEnvironmentVariable("BACKUP_PATH"));
+            return _privateDatabaseManager.GetBackups(Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH"));
         }
 
 
@@ -219,11 +212,11 @@ namespace UserRepository
                 // _uid = "testing";
                 // _password = "bigpassword";
 
-                string? USER = Environment.GetEnvironmentVariable("USER");
-                string? PASSWORD = Environment.GetEnvironmentVariable("PASSWORD");
+                string? USER = Environment.GetEnvironmentVariable("MYSQL_USER");
+                string? PASSWORD = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
                 const string HOST = "localhost";
-                string? DATABASE = Environment.GetEnvironmentVariable("DATABASE");
-                string? BACKUP_PATH = Environment.GetEnvironmentVariable("BACKUP_PATH");
+                string? DATABASE = Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME");
+                string? BACKUP_PATH = Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH");
 
                 string connectionString = "SERVER=" + HOST + ";" + "DATABASE=" +
                 DATABASE + ";" + "UID=" + USER + ";" + "PASSWORD=" + PASSWORD + ";";
@@ -611,6 +604,8 @@ namespace UserRepository
                     // int second = Time.Second;
                     // int millisecond = Time.Millisecond;
                     string dateTime = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ms");
+                    user = Environment.GetEnvironmentVariable("MYSQL_USER");
+                    password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
 
 
                     string path = backupPath + "MySqlBackup_"
@@ -641,6 +636,106 @@ namespace UserRepository
                     Console.WriteLine("Error: " + ex.Message);
                     return false;
                 }
+            }
+
+            // internal bool BackupWithEnvironment()
+            // {
+            //     try
+            //     {
+            //         // DateTime Time = DateTime.Now;
+            //         // int year = Time.Year;
+            //         // int month = Time.Month;
+            //         // int day = Time.Day;
+            //         // int hour = Time.Hour;
+            //         // int minute = Time.Minute;
+            //         // int second = Time.Second;
+            //         // int millisecond = Time.Millisecond;
+            //         string dateTime = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ms");
+
+            //         string user = Environment.GetEnvironmentVariable("MYSQL_USER");
+            //         string password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+            //         string host = Environment.GetEnvironmentVariable("MYSQL_HOST");
+            //         string database = Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME");
+            //         string backupPath = Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH");
+
+
+            //         string path = backupPath + database + "_"
+            //         + dateTime + ".sql";
+            //         StreamWriter file = new StreamWriter(path);
+
+            //         ProcessStartInfo psi = new ProcessStartInfo();
+            //         psi.FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump";
+            //         psi.RedirectStandardInput = false;
+            //         psi.RedirectStandardOutput = true;
+            //         psi.Arguments = string.Format(@"-u{0} -p{1} -h{2} {3}",
+            //             user, password, host, database);
+            //         psi.UseShellExecute = false;
+
+            //         Process process = Process.Start(psi);
+
+            //         string output;
+            //         output = process.StandardOutput.ReadToEnd();
+            //         file.WriteLine(output);
+            //         process.WaitForExit();
+            //         file.Close();
+            //         process.Close();
+
+            //         return true;
+            //     }
+            //     catch (Exception ex)
+            //     {
+            //         Console.WriteLine("Error: " + ex.Message);
+            //         return false;
+            //     }
+            // }
+
+            internal static bool CallPowerShellScript(string configFilePath)
+            {
+                try
+                {
+                    string powerShellPath = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+                    string scriptPath = @"J:\dotnetProjects\SecurePasswordManager\SPM\BackupDatabase.ps1";
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = powerShellPath,
+                        Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\" -ConfigFilePath \"{configFilePath}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    using (Process process = Process.Start(startInfo))
+                    {
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+
+                        process.WaitForExit();
+
+                        Console.WriteLine(output);
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            Console.WriteLine("Error: " + error);
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                    return false;
+                }
+            }
+
+            // TODO: Start Error 1 arg
+            internal bool BackupWithEnvironment()
+            {
+                string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
+                return CallPowerShellScript(configFilePath);
+
             }
 
             //Restore
@@ -762,6 +857,7 @@ namespace UserRepository
                     return (false, string.Empty);
                 }
             }
+
         }
     }
 }

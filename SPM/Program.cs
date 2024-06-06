@@ -50,8 +50,10 @@ namespace Main
                 //         continue;
                 //     }
                 // }
+                string? input = Prompt.GetNonSensitiveConsoleText();
 
-                running = prompt.ProgramOptions(Prompt.GetNonSensitiveConsoleText());
+                if (input != null)
+                    running = prompt.ProgramOptions(input);
 
                 if (!running)
                     break;
