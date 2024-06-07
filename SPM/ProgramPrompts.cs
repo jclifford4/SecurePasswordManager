@@ -1,6 +1,7 @@
 using EncryptionUtility;
 using HashUtility;
 using Microsoft.AspNetCore.Identity;
+using Mysqlx.Session;
 using ServiceRepository;
 using Services;
 using UserRepository;
@@ -20,6 +21,8 @@ namespace ProgramPrompts
         public const string GREEN = "\u001b[32m";
         public const string YELLOW = "\u001b[33m";
         public const string BLUE = "\u001b[34m";
+        public const string PURPLE = "\u001b[35m";
+        public const string CYAN = "\u001b[36m";
 
         /*
             User Prompts
@@ -546,7 +549,7 @@ namespace ProgramPrompts
                 }
                 else if (input.StartsWith("bup", StringComparison.Ordinal))
                 {
-                    Console.WriteLine(YELLOW + "-----Database Backup-----" + RESET);
+                    Console.Write(YELLOW + "-----Database Backup-----" + RESET);
                     if (!userRepositoryAcessor.BackupWithScript())
                         throw new SimpleException("Could not backup passwords");
 
@@ -564,28 +567,32 @@ namespace ProgramPrompts
                     Console.WriteLine(YELLOW + "-----Database Restore-----" + RESET);
                     var backupsList = userRepositoryAcessor.GetAllBackups();
 
-
                     if (backupsList.Length <= 0)
                         throw new SimpleException("No backups exist.");
 
                     foreach (var backup in backupsList)
                     {
-                        Console.WriteLine($"{backup}");
+                        Console.WriteLine(CYAN + $"{backup}" + RESET);
                     }
+                    Console.WriteLine(YELLOW + "--------------------------" + RESET);
 
                     // Ask for file to backup with
-                    Console.WriteLine(BLUE + "Paste the file name to revert back. Press enter." + RESET);
+                    Console.WriteLine(BLUE + "Paste the file name to revert back. Press enter." + CYAN);
+                    Console.Write(YELLOW + "|" + CYAN);
                     string fileName = GetSensitiveConsoleText();
+                    Console.WriteLine(YELLOW + "--------------------------" + RESET);
 
                     if (!userRepositoryAcessor.RestoreWithScript(fileName))
                         throw new SimpleException("Error reverting datbase");
 
+                    Console.Write(GREEN + "Database restored successfully." + RESET);
 
                     if (!userRepositoryAcessor.UsernameExists(username))
                     {
                         Console.WriteLine(RED + $"Logging out, \"{username}\" was created after this restore" + RESET);
                         return false;
                     }
+                    Console.WriteLine(YELLOW + "--------------------------" + RESET);
 
                     return true;
 

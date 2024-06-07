@@ -54,7 +54,7 @@ $args = @("--login-path=client", $database)
 # Execute the command
 try {
     Start-Process -FilePath $mysqlPath -ArgumentList $args -RedirectStandardInput $backupFilePath  -NoNewWindow -Wait -ErrorAction Stop
-    Write-Output "Database restored successfully."
+    # Write-Output "Database restored successfully."
 } catch {
     Write-Error "Failed to restore database: $_"
 }

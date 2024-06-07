@@ -650,7 +650,8 @@ namespace UserRepository
                 try
                 {
                     string powerShellPath = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
-                    string scriptPath = @"J:\dotnetProjects\SecurePasswordManager\SPM\BackupDatabase.ps1";
+                    string scriptPath = @".\scripts\BackupDatabase.ps1";
+                    // string scriptPath = @"J:\dotnetProjects\SecurePasswordManager\SPM\BackupDatabase.ps1";
 
                     ProcessStartInfo startInfo = new ProcessStartInfo()
                     {
@@ -690,7 +691,8 @@ namespace UserRepository
             //TODO: set universal path locations
             internal bool BackupWithScript()
             {
-                string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
+                string configFilePath = @".\scripts\.my.cnf";
+                // string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
                 return CallBackupScript(configFilePath);
 
             }
@@ -698,7 +700,8 @@ namespace UserRepository
             //TODO: set universal path locations
             internal bool RestoreWithScript(string fileName)
             {
-                string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
+                string configFilePath = @".\scripts\.my.cnf";
+                // string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
                 return CallRestoreScript(configFilePath, fileName);
             }
 
@@ -708,7 +711,8 @@ namespace UserRepository
                 try
                 {
                     string powerShellPath = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
-                    string scriptPath = @"J:\dotnetProjects\SecurePasswordManager\SPM\RestoreDatabase.ps1";
+                    // string scriptPath = @"J:\dotnetProjects\SecurePasswordManager\SPM\RestoreDatabase.ps1";
+                    string scriptPath = @".\scripts\RestoreDatabase.ps1";
 
                     ProcessStartInfo startInfo = new ProcessStartInfo()
                     {
