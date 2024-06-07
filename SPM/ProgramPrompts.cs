@@ -547,7 +547,7 @@ namespace ProgramPrompts
                 else if (input.StartsWith("bup", StringComparison.Ordinal))
                 {
                     Console.WriteLine(YELLOW + "-----Database Backup-----" + RESET);
-                    if (!userRepositoryAcessor.BackupWithEnvironment())
+                    if (!userRepositoryAcessor.BackupWithScript())
                         throw new SimpleException("Could not backup passwords");
 
                     Console.Write(BLUE + "Creating backup.." + RESET);
@@ -577,7 +577,7 @@ namespace ProgramPrompts
                     Console.WriteLine(BLUE + "Paste the file name to revert back. Press enter." + RESET);
                     string fileName = GetSensitiveConsoleText();
 
-                    if (!userRepositoryAcessor.Restore(fileName))
+                    if (!userRepositoryAcessor.RestoreWithScript(fileName))
                         throw new SimpleException("Error reverting datbase");
 
 

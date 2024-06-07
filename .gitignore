@@ -12,6 +12,10 @@
 *.sql
 *.vscode
 *.txt
+*.cnf
+*.json
+*README.md
+
     
 
 # User-specific files (MonoDevelop/Xamarin Studio)

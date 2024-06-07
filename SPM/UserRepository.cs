@@ -127,9 +127,13 @@ namespace UserRepository
             return _privateDatabaseManager.Backup(host, user, password, database, backupPath);
         }
 
-        public bool BackupWithEnvironment()
+        public bool BackupWithScript()
         {
-            return _privateDatabaseManager.BackupWithEnvironment();
+            return _privateDatabaseManager.BackupWithScript();
+        }
+        public bool RestoreWithScript(string fileName)
+        {
+            return _privateDatabaseManager.RestoreWithScript(fileName);
         }
         public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
         {
@@ -689,7 +693,7 @@ namespace UserRepository
             //     }
             // }
 
-            internal static bool CallPowerShellScript(string configFilePath)
+            internal static bool CallBackupScript(string configFilePath)
             {
                 try
                 {
@@ -730,12 +734,59 @@ namespace UserRepository
                 }
             }
 
-            // TODO: Start Error 1 arg
-            internal bool BackupWithEnvironment()
+
+            internal bool BackupWithScript()
             {
                 string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
-                return CallPowerShellScript(configFilePath);
+                return CallBackupScript(configFilePath);
 
+            }
+
+            internal bool RestoreWithScript(string fileName)
+            {
+                string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
+                return CallRestoreScript(configFilePath, fileName);
+            }
+
+            internal static bool CallRestoreScript(string configFilePath, string fileName)
+            {
+                try
+                {
+                    string powerShellPath = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+                    string scriptPath = @"J:\dotnetProjects\SecurePasswordManager\SPM\RestoreDatabase.ps1";
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = powerShellPath,
+                        Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\" -ConfigFilePath \"{configFilePath}\" -BackupFile \"{fileName}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    using (Process process = Process.Start(startInfo))
+                    {
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+
+                        process.WaitForExit();
+
+                        Console.WriteLine(output);
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            Console.WriteLine("Error: " + error);
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                    return false;
+                }
             }
 
             //Restore
@@ -772,6 +823,8 @@ namespace UserRepository
                     return false;
                 }
             }
+
+
 
             internal string[] GetBackups(string backupPath)
             {
