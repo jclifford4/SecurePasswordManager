@@ -1,10 +1,6 @@
-using System.Data.Common;
 using System.Diagnostics;
-using DBServer;
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Common;
 using Users;
-using ZstdSharp.Unsafe;
 
 namespace UserRepository
 {
@@ -46,6 +42,7 @@ namespace UserRepository
         {
             return _privateDatabaseManager.GetAllUsers();
         }
+
 
         /// <summary>
         /// Insert user
@@ -127,14 +124,18 @@ namespace UserRepository
             return _privateDatabaseManager.Backup(host, user, password, database, backupPath);
         }
 
+        //TODO: Handle what user inputs, no hardcoded values
         public bool BackupWithScript()
         {
             return _privateDatabaseManager.BackupWithScript();
         }
+
+        //TODO: Handle what user inputs, no hardcoded values
         public bool RestoreWithScript(string fileName)
         {
             return _privateDatabaseManager.RestoreWithScript(fileName);
         }
+
         public bool Restore(string host, string user, string password, string database, string backupPath, string fileName)
         {
             return _privateDatabaseManager.Restore(host, user, password, database, backupPath, fileName);
@@ -642,57 +643,8 @@ namespace UserRepository
                 }
             }
 
-            // internal bool BackupWithEnvironment()
-            // {
-            //     try
-            //     {
-            //         // DateTime Time = DateTime.Now;
-            //         // int year = Time.Year;
-            //         // int month = Time.Month;
-            //         // int day = Time.Day;
-            //         // int hour = Time.Hour;
-            //         // int minute = Time.Minute;
-            //         // int second = Time.Second;
-            //         // int millisecond = Time.Millisecond;
-            //         string dateTime = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-ms");
 
-            //         string user = Environment.GetEnvironmentVariable("MYSQL_USER");
-            //         string password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
-            //         string host = Environment.GetEnvironmentVariable("MYSQL_HOST");
-            //         string database = Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME");
-            //         string backupPath = Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH");
-
-
-            //         string path = backupPath + database + "_"
-            //         + dateTime + ".sql";
-            //         StreamWriter file = new StreamWriter(path);
-
-            //         ProcessStartInfo psi = new ProcessStartInfo();
-            //         psi.FileName = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump";
-            //         psi.RedirectStandardInput = false;
-            //         psi.RedirectStandardOutput = true;
-            //         psi.Arguments = string.Format(@"-u{0} -p{1} -h{2} {3}",
-            //             user, password, host, database);
-            //         psi.UseShellExecute = false;
-
-            //         Process process = Process.Start(psi);
-
-            //         string output;
-            //         output = process.StandardOutput.ReadToEnd();
-            //         file.WriteLine(output);
-            //         process.WaitForExit();
-            //         file.Close();
-            //         process.Close();
-
-            //         return true;
-            //     }
-            //     catch (Exception ex)
-            //     {
-            //         Console.WriteLine("Error: " + ex.Message);
-            //         return false;
-            //     }
-            // }
-
+            //TODO: set universal path locations
             internal static bool CallBackupScript(string configFilePath)
             {
                 try
@@ -735,6 +687,7 @@ namespace UserRepository
             }
 
 
+            //TODO: set universal path locations
             internal bool BackupWithScript()
             {
                 string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
@@ -742,12 +695,14 @@ namespace UserRepository
 
             }
 
+            //TODO: set universal path locations
             internal bool RestoreWithScript(string fileName)
             {
                 string configFilePath = @"J:\dotnetProjects\SecurePasswordManager\SPM\SPMDatabase\.my.cnf";
                 return CallRestoreScript(configFilePath, fileName);
             }
 
+            //TODO: set universal path locations
             internal static bool CallRestoreScript(string configFilePath, string fileName)
             {
                 try
