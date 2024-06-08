@@ -12,11 +12,11 @@ namespace EncryptionUtility
 
         static EncryptionUtil()
         {
-            string? key = Environment.GetEnvironmentVariable("ENCRYPTION_KEY");
+            string? key = Environment.GetEnvironmentVariable("MYSQL_ENCRYPTION_KEY");
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentException("Encryption key must be set in the environment variable.\n"
-                                            + "$env:ENCRYPTION_KEY = \"your-32byte-base64-key\"");
+                                            + "$env:MYSQL_ENCRYPTION_KEY = \"your-32byte-base64-key\"");
             }
 
             byte[] keyBytes = Convert.FromBase64String(key);

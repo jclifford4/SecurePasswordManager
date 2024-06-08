@@ -111,12 +111,18 @@ namespace ProgramPrompts
                 if (isValidUsername(input))
                     return input;
 
-                throw new ArgumentException();
+                throw new SimpleException("Username is invalid");
 
+            }
+            catch (SimpleException ex)
+            {
+                HandleException(ex);
+                return "error";
             }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex.Message + RESET);
+                HandleException(ex);
+                // Console.WriteLine(RED + ex.Message + RESET);
                 return "error";
             }
         }
@@ -128,11 +134,16 @@ namespace ProgramPrompts
                 if (isValidPassord(password))
                     return true;
 
-                throw new ArgumentException();
+                throw new SimpleException("Password is invalid");
+            }
+            catch (SimpleException ex)
+            {
+                HandleException(ex);
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex.Message + RESET);
+                HandleException(ex);
                 return false;
             }
         }
@@ -145,12 +156,17 @@ namespace ProgramPrompts
                     return input;
                 else
                 {
-                    throw new ArgumentException($"Invalid Input: length({input.Length}) -> [Min: 0, Max: 16]");
+                    throw new SimpleException($"Invalid Input: length({input.Length}) -> [Min: 0, Max: 16]");
                 }
+            }
+            catch (SimpleException ex)
+            {
+                HandleException(ex);
+                return "error";
             }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex.Message + RESET);
+                HandleException(ex);
                 return "error";
             }
         }
@@ -201,19 +217,24 @@ namespace ProgramPrompts
             {
                 string username = CreateNewUsername();
                 if (username.Equals("error"))
-                    throw new Exception("Username Error: may have illegal characters");
+                    throw new SimpleException("Username Error: may have illegal characters");
 
                 string password = CreateNewMasterPassword();
                 if (password.Equals("error"))
-                    throw new Exception("Password Error");
+                    throw new SimpleException("Password Error");
 
 
                 User user = new User(username, password);
                 return userRepoAcess.Add(user);
             }
+            catch (SimpleException ex)
+            {
+                HandleException(ex);
+                return false;
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex.Message + RESET);
+                HandleException(ex);
                 return false;
             }
         }
@@ -260,7 +281,8 @@ namespace ProgramPrompts
                     var (isLoggedIn, username) = Login();
                     if (isLoggedIn)
                     {
-                        Console.WriteLine(GREEN + "\nLogged in!" + RESET);
+                        Console.WriteLine(GREEN + "\n\nLogged in!" + RESET);
+                        Console.WriteLine(YELLOW + "--------------------" + RESET);
                         Thread.Sleep(500);
                         ClearConsole();
 
@@ -268,6 +290,7 @@ namespace ProgramPrompts
                         {
                             SPMUserIndicator(username);
                             isLoggedIn = LoginOptions(username, GetNonSensitiveConsoleText());
+
 
                             if (!isLoggedIn)
                                 break;
@@ -397,7 +420,7 @@ namespace ProgramPrompts
 
 
                         // Display Process
-                        Console.Write(BLUE + "Encrypting.." + RESET);
+                        Console.WriteLine(BLUE + "Encrypting.." + RESET);
                         Thread.Sleep(200);
                         Console.Write(BLUE + "Updating.." + RESET);
                         Thread.Sleep(200);
@@ -622,6 +645,8 @@ namespace ProgramPrompts
 
             try
             {
+                Console.WriteLine(YELLOW + "-----User Login-----" + RESET);
+
                 // Get username
                 PromptForUsername();
                 string username = GetSensitiveUsernameConsoleText();
@@ -662,8 +687,8 @@ namespace ProgramPrompts
             File.WriteAllText("error_log.txt", ex.ToString());
 
             // Display simplified message to the user
-            Console.WriteLine($"Error: {ex.Message}");
-            Console.WriteLine("StackTrace: [Stack trace hidden]");
+            Console.WriteLine(RED + $"Error: {ex.Message}" + RESET);
+            Console.WriteLine(RED + "StackTrace: [Stack trace hidden]" + RESET);
         }
 
         internal static void ShowHelpCommands()
@@ -678,7 +703,7 @@ namespace ProgramPrompts
                       YELLOW + "\tlsp" + RED + " {serivce name}" + RESET + " :" + BLUE + " List user password for 'service name'\n" +
                       YELLOW + "\tlsn" + RESET + " :" + BLUE + " List all user service names\n" +
                       YELLOW + "\tbup" + RESET + " :" + BLUE + " Backup Database\n" +
-                      YELLOW + "\trev" + RESET + " :" + BLUE + " Revert to most recent database save file\n" +
+                      YELLOW + "\trev" + RESET + " :" + BLUE + " Revert to a recent databse version\n" +
                       YELLOW + "\tout" + RESET + " :" + BLUE + " Log out of profile\n" +
                       YELLOW + "\tkll" + RESET + " :" + BLUE + " Delete User and all passwords\n" +
                 YELLOW + "lu" + RESET + " :" + BLUE + " List all users.\n" +
@@ -704,19 +729,25 @@ namespace ProgramPrompts
             try
             {
                 if (string.IsNullOrWhiteSpace(password))
-                    throw new ArgumentException("INVALID PASSWORD: (empty)");
+                    throw new SimpleException("INVALID PASSWORD: (empty)");
 
                 bool isValid = UserUtil.IsValidPassword(password);
 
                 if (!isValid)
-                    throw new ArgumentException($"INVALID PASSWORD: length({password.Length}) -> [Min: 8, Max: 128]");
+                    throw new SimpleException($"INVALID PASSWORD: length({password.Length}) -> [Min: 8, Max: 128]");
 
                 return true;
 
             }
+            catch (SimpleException ex)
+            {
+                HandleException(ex);
+                return false;
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(RED + ex.Message + RESET);
+                // Console.WriteLine(RED + ex.Message + RESET);
+                HandleException(ex);
                 return false;
             }
         }
