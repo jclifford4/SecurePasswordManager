@@ -17,39 +17,21 @@ namespace Main
         public static void Main(string[] args)
         {
             var prompt = new Prompt();
-
             bool running = true;
             bool isFirstStarup = true;
+            Prompt.ClearConsole();
             while (running)
             {
-                // Console.WriteLine(Environment.GetEnvironmentVariable("ENCRYPTION_KEY"));
-                // Console.WriteLine(Environment.GetEnvironmentVariable("HOST"));
-                // Console.WriteLine(Environment.GetEnvironmentVariable("USER"));
-                // Console.WriteLine(Environment.GetEnvironmentVariable("PASSWORD"));
-                // Console.WriteLine(Environment.GetEnvironmentVariable("DATABASE"));
-                // Console.WriteLine(Environment.GetEnvironmentVariable("BACKUP_PATH"));
-
                 if (isFirstStarup)
                 {
                     Prompt.StartUp();
+                    Prompt.Help();
                     isFirstStarup = false;
                 }
 
                 Prompt.SPMIndicator();
+                Console.Write(Prompt.YELLOW);
 
-                // if (Console.KeyAvailable)
-                // {
-
-                //     var keyInfo = Console.ReadKey(intercept: true);
-
-                //     // Check if the Control key and L key are pressed simultaneously
-                //     if ((keyInfo.Modifiers & ConsoleModifiers.Control) != 0 && keyInfo.Key == ConsoleKey.L)
-                //     {
-                //         Console.Clear();
-                //         Prompt.SPMIndicator();
-                //         continue;
-                //     }
-                // }
                 string? input = Prompt.GetNonSensitiveConsoleText();
 
                 if (input != null)
@@ -59,7 +41,7 @@ namespace Main
                     break;
 
             }
-
+            Console.Write(Prompt.RESET);
             Console.WriteLine("Press enter to exit...");
             Console.ReadLine();
         }

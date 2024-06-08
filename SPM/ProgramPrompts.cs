@@ -29,12 +29,28 @@ namespace ProgramPrompts
         */
         public static void StartUp()
         {
-            Console.WriteLine(YELLOW + "[---Secure Password Manager---]" + RESET);
+            string file = "art/logoansi.ans";
+            // Console.WriteLine(YELLOW + "[-----Secure Password Manager-----]" + RESET);
+            try
+            {
+                using (StreamReader reader = new StreamReader(file))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        Console.WriteLine(line);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
         }
 
         public static void Help()
         {
-            Console.WriteLine("(h -help q -quit)");
+            Console.WriteLine(YELLOW + "      [h -help q -quit]" + RESET);
         }
 
         public static void PromptForUsername()
@@ -239,7 +255,7 @@ namespace ProgramPrompts
             }
         }
 
-        //TODO: More commands.
+
         public bool ProgramOptions(string input)
         {
 
@@ -281,7 +297,7 @@ namespace ProgramPrompts
                     var (isLoggedIn, username) = Login();
                     if (isLoggedIn)
                     {
-                        Console.WriteLine(GREEN + "\n\nLogged in!" + RESET);
+                        Console.WriteLine(GREEN + "\nLogged in!" + RESET);
                         Console.WriteLine(YELLOW + "--------------------" + RESET);
                         Thread.Sleep(500);
                         ClearConsole();
@@ -322,6 +338,7 @@ namespace ProgramPrompts
 
         public bool LoginOptions(string username, string input)
         {
+
             try
             {
                 var serviceRepoAccessor = new ServiceRepositoryAccessor();
@@ -350,9 +367,28 @@ namespace ProgramPrompts
                 }
                 else if (input.StartsWith("new", StringComparison.Ordinal))
                 {
-                    serviceName = input.Substring(4).Trim();
+                    try
+                    {
+                        serviceName = input.Substring(4).Trim();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        return true;
+                    }
+
                     Console.WriteLine(YELLOW + "-----New Service-----" + RESET);
                     Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
+
+                    // Get userID
+                    int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+                    // Check service exists
+                    if (serviceRepoAccessor.ServiceExistsByUserID(serviceName, userID))
+                    {
+                        Console.WriteLine(RED + $"\"{serviceName}\" already exists " + RESET);
+                        return true;
+                    }
 
                     // Prompt service password
                     PromptForPassword();
@@ -365,9 +401,6 @@ namespace ProgramPrompts
                     if (repeatPassword.Equals(password))
                     {
                         var service = new Service(serviceName, password);
-                        // Get userID
-
-                        int userID = userRepositoryAcessor.GetUserIDByUserName(username);
 
                         // Check if service exists for this user
                         if (serviceRepoAccessor.ServiceExistsByUserID(service, userID))
@@ -392,7 +425,27 @@ namespace ProgramPrompts
                 }
                 else if (input.StartsWith("upd", StringComparison.Ordinal))
                 {
-                    serviceName = input.Substring(4).Trim();
+                    // string serviceName = input.Substring(4).Trim();
+                    try
+                    {
+                        serviceName = input.Substring(4).Trim();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        return true;
+                    }
+
+                    // Get userID
+                    int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+                    // Check service exists
+                    if (!serviceRepoAccessor.ServiceExistsByUserID(serviceName, userID))
+                    {
+                        Console.WriteLine(RED + $"\"{serviceName}\" does not exists " + RESET);
+                        return true;
+                    }
+
                     Console.WriteLine(YELLOW + "-----Update Service-----" + RESET);
                     Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
 
@@ -407,12 +460,7 @@ namespace ProgramPrompts
                     {
 
                         var service = new Service(serviceName, password);
-                        // Get userID
-                        int userID = userRepositoryAcessor.GetUserIDByUserName(username);
 
-                        // Check if service exists for this user
-                        if (!serviceRepoAccessor.ServiceExistsByUserID(service, userID))
-                            throw new SimpleException("Service does not exists, use 'new' command instead");
 
                         // Add to DB
                         if (!serviceRepoAccessor.UpdateServiceEncryption(service, userID))
@@ -420,7 +468,7 @@ namespace ProgramPrompts
 
 
                         // Display Process
-                        Console.WriteLine(BLUE + "Encrypting.." + RESET);
+                        Console.WriteLine("\n" + BLUE + "Encrypting.." + RESET);
                         Thread.Sleep(200);
                         Console.Write(BLUE + "Updating.." + RESET);
                         Thread.Sleep(200);
@@ -435,17 +483,34 @@ namespace ProgramPrompts
                 }
                 else if (input.StartsWith("del", StringComparison.Ordinal))
                 {
-                    serviceName = input.Substring(4).Trim();
-                    Console.WriteLine(YELLOW + "-----Delete Service-----" + RESET);
-                    Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
+                    try
+                    {
+                        serviceName = input.Substring(4).Trim();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        return true;
+                    }
 
-                    // Prompt master password
-                    PromptForMasterPassword();
-                    string password = HashUtil.ReadPassword();
-                    Console.WriteLine();
+                    Console.WriteLine(YELLOW + "-----Delete Service-----" + RESET);
 
                     // Get userID
                     int userID = userRepositoryAcessor.GetUserIDByUserName(username);
+
+                    // Check service exists
+                    if (!serviceRepoAccessor.ServiceExistsByUserID(serviceName, userID))
+                    {
+                        Console.WriteLine(RED + $"\"{serviceName}\" does not exist " + RESET);
+                        return true;
+                    }
+
+                    Console.WriteLine(GREEN + "Service: " + BLUE + $"{serviceName}" + RESET);
+                    // Prompt master password
+                    PromptForMasterPassword();
+                    string password = HashUtil.ReadPassword();
+                    Console.WriteLine(RESET);
+
 
                     // Get master hash
                     var (isHash, hash) = userRepositoryAcessor.GetPasswordHash(userID);
@@ -460,16 +525,33 @@ namespace ProgramPrompts
                     // Delete service
                     bool isDeleted = serviceRepoAccessor.DeleteByServiceName(serviceName, userID);
 
-                    // Display Process
-                    Console.Write(BLUE + "Deleting.." + RESET);
-                    Thread.Sleep(200);
-                    Console.Write(GREEN + "Deleted!" + RESET);
-                    Console.WriteLine();
-                    return !isDeleted;
+                    if (isDeleted)
+                    {
+                        // Display Process
+                        Console.Write(BLUE + "Deleting.." + RESET);
+                        Thread.Sleep(200);
+                        Console.Write(GREEN + "Deleted!" + RESET);
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine(RED + $"Could not delete service \"{serviceName}\"" + RESET);
+                    }
+
+                    return true;
                 }
                 else if (input.StartsWith("lsp", StringComparison.Ordinal))
                 {
-                    serviceName = input.Substring(4).Trim();
+                    try
+                    {
+                        serviceName = input.Substring(4).Trim();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        return true;
+                    }
+
                     Console.WriteLine(YELLOW + "-----Password Display-----" + RESET);
 
                     // Prompt master password
@@ -518,13 +600,18 @@ namespace ProgramPrompts
 
                     // Verify list
                     if (servicesList.Count == 0)
-                        throw new SimpleException("Empty service list");
+                    {
+                        Console.WriteLine(RED + "No services available" + RESET);
+                        return true;
+                    }
+
                     Console.WriteLine(YELLOW + "-----Service List-----" + RESET);
                     foreach (var pair in servicesList)
                     {
                         Console.WriteLine(BLUE + $"{pair.Item1.PadRight(15)}: {pair.Item2.PadRight(20)}" + RESET);
                     }
                     Console.WriteLine(YELLOW + "----------------------" + RESET);
+
                     return true;
                 }
                 else if (input.StartsWith("kll", StringComparison.Ordinal))
@@ -600,9 +687,27 @@ namespace ProgramPrompts
                     Console.WriteLine(YELLOW + "--------------------------" + RESET);
 
                     // Ask for file to backup with
-                    Console.WriteLine(BLUE + "Paste the file name to revert back. Press enter." + CYAN);
+                    Console.WriteLine(BLUE + "Paste the file name to revert back or q to exit." + CYAN);
                     Console.Write(YELLOW + "|" + CYAN);
-                    string fileName = GetSensitiveConsoleText();
+
+                    string fileName;
+                    try
+                    {
+                        fileName = GetSensitiveConsoleText();
+
+                        if (fileName.Equals("q"))
+                            return true;
+                    }
+                    catch (SimpleException ex)
+                    {
+                        HandleException(ex);
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return true;
+                    }
+
                     Console.WriteLine(YELLOW + "--------------------------" + RESET);
 
                     if (!userRepositoryAcessor.RestoreWithScript(fileName))
@@ -649,7 +754,9 @@ namespace ProgramPrompts
 
                 // Get username
                 PromptForUsername();
+                Console.Write(BLUE);
                 string username = GetSensitiveUsernameConsoleText();
+                Console.Write(RESET);
                 if (!userRepoAcess.UsernameExists(username))
                     throw new SimpleException($"Username {username} does not exist");
 

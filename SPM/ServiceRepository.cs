@@ -257,6 +257,28 @@ namespace ServiceRepository
                 return false;
             }
         }
+        public bool ServiceExistsByUserID(string serviceName, int userID)
+        {
+            try
+            {
+                _connection.Open();
+
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM services WHERE userID=@UserID AND service=@Service", _connection);
+                cmd.Parameters.AddWithValue("@Service", serviceName);
+                cmd.Parameters.AddWithValue("@UserID", userID);
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                _connection.Close();
+
+                return count > 0;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error finding service: ", ex.Message);
+                return false;
+            }
+        }
         public bool ServiceNameExistsByUserID(string serviceName, int userID)
         {
             try
