@@ -30,7 +30,6 @@ namespace ProgramPrompts
         public static void StartUp()
         {
             string file = "art/logoansi.ans";
-            // Console.WriteLine(YELLOW + "[-----Secure Password Manager-----]" + RESET);
             try
             {
                 using (StreamReader reader = new StreamReader(file))
@@ -46,6 +45,7 @@ namespace ProgramPrompts
             {
                 HandleException(ex);
             }
+            Console.WriteLine(YELLOW + "[-----Secure Password Manager-----]" + RESET);
         }
 
         public static void Help()
