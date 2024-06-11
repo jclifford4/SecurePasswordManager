@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using Services;
 using UserRepository;
@@ -26,16 +27,112 @@ namespace ServiceRepository
 
         public ServiceRepositoryAccessor()
         {
-            string? USER = Environment.GetEnvironmentVariable("MYSQL_USER");
-            string? PASSWORD = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
-            const string HOST = "localhost";
-            string? DATABASE = Environment.GetEnvironmentVariable("MYSQL_DATABASE_NAME");
-            string? BACKUP_PATH = Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH");
 
-            string connectionString = "SERVER=" + HOST + ";" + "DATABASE=" +
-            DATABASE + ";" + "UID=" + USER + ";" + "PASSWORD=" + PASSWORD + ";";
+            try
+            {
+                string dbDataPath = @"scripts/.my.cnf";
+                string loginPath = @$"{Environment.GetEnvironmentVariable("MYSQL_COMMANDS")}" + "my_print_defaults";
 
-            _connection = new MySqlConnection(connectionString);
+                var (database, backup) = ReadDatabaseCredentials(dbDataPath);
+                var (user, password) = GetLoginDetailsFromExe(loginPath);
+
+                const string HOST = "localhost";
+
+                string connectionString = "SERVER=localhost;" + "UID=" + user + ";PASSWORD=" + password + ";DATABASE= " + database + ";";
+
+                _connection = new MySqlConnection(connectionString);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error establishing connect to database");
+                Console.WriteLine(ex.Message);
+
+            }
+        }
+
+        static (string user, string password) GetLoginDetailsFromExe(string exePath)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = exePath,
+                Arguments = "-s client",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (Process process = new Process { StartInfo = startInfo })
+            {
+                process.Start();
+
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    string output = reader.ReadToEnd();
+                    process.WaitForExit();
+
+                    return ParseOutput(output);
+                }
+            }
+        }
+
+        static (string user, string password) ParseOutput(string output)
+        {
+            string user = null;
+            string password = null;
+
+            using (StringReader reader = new StringReader(output))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.StartsWith("--user="))
+                    {
+                        user = line.Substring("--user=".Length).Trim();
+                    }
+                    else if (line.StartsWith("--password="))
+                    {
+                        password = line.Substring("--password=".Length).Trim();
+                    }
+                }
+            }
+
+            if (user == null || password == null)
+            {
+                throw new Exception("User or password not found in the output.");
+            }
+
+            return (user, password);
+        }
+
+
+        static (string database, string backupPath) ReadDatabaseCredentials(string filePath)
+        {
+            string[] lines = File.ReadAllLines(filePath);
+
+            string database = null;
+            string backupPath = null;
+
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+
+                if (trimmedLine.StartsWith("database="))
+                {
+                    database = trimmedLine.Substring("database=".Length).Trim();
+                }
+                else if (trimmedLine.StartsWith("backup_path="))
+                {
+                    backupPath = trimmedLine.Substring("backup_path=".Length).Trim();
+                }
+
+                if (database != null && backupPath != null)
+                {
+                    // Found both username and password, exit loop
+                    break;
+                }
+            }
+
+            return (database, backupPath);
         }
 
         private bool OpenConnection()

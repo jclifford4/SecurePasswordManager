@@ -12,7 +12,8 @@ namespace EncryptionUtility
 
         static EncryptionUtil()
         {
-            string? key = Environment.GetEnvironmentVariable("MYSQL_ENCRYPTION_KEY");
+            string? key = ReadEncryptionCredentials(@"scripts/.my.cnf");
+
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentException("Encryption key must be set in the environment variable.\n"
@@ -102,6 +103,34 @@ namespace EncryptionUtility
                 return Convert.ToBase64String(key);
             }
 
+        }
+
+        static string ReadEncryptionCredentials(string filePath)
+        {
+            string[] lines = File.ReadAllLines(filePath);
+
+            string encryption = null;
+
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+
+                if (trimmedLine.StartsWith("encryption="))
+                {
+                    encryption = trimmedLine.Substring("encryption=".Length).Trim();
+                }
+
+                if (encryption != null)
+                {
+                    // Found both username and password, exit loop
+                    break;
+                }
+            }
+
+            if (encryption == null || string.IsNullOrWhiteSpace(encryption))
+                throw new SimpleException("Encryption key is empty or null.");
+
+            return encryption;
         }
 
 

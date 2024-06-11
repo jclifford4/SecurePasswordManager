@@ -323,6 +323,21 @@ namespace ProgramPrompts
                     ClearConsole();
                     return false;
 
+                case "keygen":
+                    string key = EncryptionUtil.GenerateSecureKey();
+                    Console.Write(YELLOW);
+                    for (int i = 0; i < key.Length; i++)
+                        Console.Write("-");
+
+                    Console.WriteLine("\n" + BLUE + key);
+
+                    Console.Write(YELLOW);
+                    for (int i = 0; i < key.Length; i++)
+                        Console.Write("-");
+                    Console.Write("\n\n" + RESET);
+
+                    break;
+
                 default:
                     Console.WriteLine(RED + $"{input} is not a valid command");
                     break;
@@ -801,6 +816,7 @@ namespace ProgramPrompts
         internal static void ShowHelpCommands()
         {
             Console.WriteLine(
+                YELLOW + "keygen" + RESET + " :" + BLUE + " Generate a random secure key.\n" +
                 YELLOW + "cr" + RESET + " :" + BLUE + " Create a new user profile. Prompts user for a unique username and a master password\n" +
                 YELLOW + "cl" + RESET + " :" + BLUE + " Clear console\n" +
                 YELLOW + "lg" + RESET + " :" + BLUE + " Login to a user profile. Allows access to saved service passwords. Other commands are available\n" +
