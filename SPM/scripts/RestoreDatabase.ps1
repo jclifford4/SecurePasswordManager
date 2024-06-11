@@ -44,6 +44,7 @@ if (-not (Test-Path $backupPath)) {
 }
 
 # Full path to the mysql executable
+# TODO: $mysqlPath = "$env:MYSQL_Commands/mysql.exe"
 $mysqlPath = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
 
 $backupFilePath = $backupPath + $BackupFile
@@ -55,6 +56,7 @@ $args = @("--login-path=client", $database)
 try {
     Start-Process -FilePath $mysqlPath -ArgumentList $args -RedirectStandardInput $backupFilePath  -NoNewWindow -Wait -ErrorAction Stop
     # Write-Output "Database restored successfully."
-} catch {
+}
+catch {
     Write-Error "Failed to restore database: $_"
 }
