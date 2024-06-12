@@ -34,19 +34,20 @@ A secure way to manage passwords on a local machine.
 #### Open MysqlShell
 - make sure you are in JS mode type `\js`
 
-##### Create a new user
+##### Connect with root
+- *password was created on install*
 ```
 \connect root@localhost
 ``` 
-- *password was created on install*
-
+##### Change to sql mode
 ```
 \sql
 ```
+##### Create a new user 
 ```
 CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';
 ```
----
+##### Grant and Flush privileges
 ```
 GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';
 ```
@@ -56,16 +57,16 @@ FLUSH PRIVILEGES;
 ```
 \disconnect
 ```
+##### Connect with your user
 ```
 \connect {newuser}@localhost
-``` 
-- *enter new password*
+```
 
-##### Create a new Database
+#### Create a new Database
 - `CREATE DATABASE {newdatabase};`
 - `SHOW DATABASES;`   - *{newdatabase} should be listed*
 
-##### Create tables
+#### Create tables
 ```
 CREATE TABLE `services` (
     `passID` int NOT NULL AUTO_INCREMENT,
