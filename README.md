@@ -37,7 +37,7 @@ A secure way to manage passwords on a local machine.
 
 ---
 
-#### Open MysqlShell
+### Open MysqlShell
 - make sure you are in JS mode type `\js`
 
 ##### Connect with root
@@ -53,7 +53,7 @@ A secure way to manage passwords on a local machine.
 ```
 CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';
 ```
-##### Grant and Flush privileges
+##### Grant and Flush privileges:
 ```
 GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';
 ```
@@ -63,7 +63,7 @@ FLUSH PRIVILEGES;
 ```
 \disconnect
 ```
-##### Connect with your user
+##### Connect with your user:
 ```
 \connect {newuser}@localhost
 ```
@@ -71,8 +71,14 @@ FLUSH PRIVILEGES;
 ---
 
 #### Create a new Database
-- `CREATE DATABASE {newdatabase};`
-- `SHOW DATABASES;`   - *{newdatabase} should be listed*
+```
+CREATE DATABASE {newdatabase};
+```
+
+#### Display new database
+```
+SHOW DATABASES;
+```   
 
 #### Create tables
 ```
