@@ -3,15 +3,15 @@ A secure way to manage passwords on a local machine.
 
 ## Windows Installation
 
-
 ### Install Windows Terminal
 - It can be found in microsoft store for free if you search ***Windows Terminal***
----
 
+---
 
 ### Run SPM.exe
 - type `keygen` and copy the genrated hash
 - type `q` to quit the program
+
 ---
 
 ### Configure .my.cnf file
@@ -24,6 +24,7 @@ A secure way to manage passwords on a local machine.
     - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***
 -  Encrypt the file
     - `cipher /e .\.my.cnf` - *this will encrypt the file*
+
 ---
 
 ### Install MySQL Community 8.0.37 or higher
@@ -33,6 +34,7 @@ A secure way to manage passwords on a local machine.
 - Don't install example databases
 - Uncheck open workbench
 - Keep shell checked
+
 ---
 
 #### Open MysqlShell
@@ -65,6 +67,8 @@ FLUSH PRIVILEGES;
 ```
 \connect {newuser}@localhost
 ```
+
+---
 
 #### Create a new Database
 - `CREATE DATABASE {newdatabase};`
