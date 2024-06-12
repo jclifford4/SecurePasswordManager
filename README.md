@@ -1,5 +1,5 @@
 # Secure Password Manager
-A secure way to manage passwords on a local machine.
+## A secure way to manage passwords on a local machine.
 
 ## Windows Installation
 
@@ -16,14 +16,16 @@ A secure way to manage passwords on a local machine.
 
 ### Configure .my.cnf file
 -  Go to scripts directory
--  Open **.my.cnf** file
+-  Open ***.my.cnf*** file
 -  Paste your key from `keygen` command
 -  Enter a database name that will be used later
 -  Save the file and close it
 -  Open Powershell where .my.cnf is located
     - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***
 -  Encrypt the file
-    - `cipher /e .\.my.cnf` - *this will encrypt the file*
+```mysql
+cipher /e .\.my.cnf
+``` 
 
 ---
 
