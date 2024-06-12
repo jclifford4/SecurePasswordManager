@@ -1,16 +1,12 @@
----Environment Variables---
-MYSQL_USER
-MYSQL_PASSWORD
-MYSQL_DATABASE_NAME
-MYSQL_HOST
-MYSQL_BACKUP_PATH
+# Secure Password Manager
+A secure way to manage passwords on a local machine.
 
----Windows Installation---
-0. Run SPM.exe
+## ---Windows Installation---
+1. Run SPM.exe
     - type `keygen` and copy the genrated hash
     - type `q` to quit the program
 
-1. Open a .my.cnf file
+2. Open a .my.cnf file
     i. Add your info
     - [other]
     - database=`{your_db_name}`
@@ -19,7 +15,7 @@ MYSQL_BACKUP_PATH
     ii. open terminal in scripts folder
         - `cipher /e .\.my.cnf` - this will encrypt the file
 
-2. Install MySQL Community 8.0.37 or higher
+3. Install MySQL Community 8.0.37 or higher
     - https://dev.mysql.com/downloads/installer/
     - Select Developer Install
     - Continue to make a root password
@@ -80,7 +76,7 @@ MYSQL_BACKUP_PATH
             - Add `MYSQL_COMMANDS` with value `path\to\mysqlserver\bin\`
             - Add `POWERSHELL` = `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`
 
-3. Install Windows Terminal
+4. Install Windows Terminal
     - It can be found in microsoft store for free if you search `Windows Terminal`
     Run this command to create a secure configuration file for database password :
         "./mysql_config_editor set --login-path=client --host=localhost --user=your_username --password"
