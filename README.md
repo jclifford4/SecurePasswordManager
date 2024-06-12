@@ -33,18 +33,20 @@ A secure way to manage passwords on a local machine.
 
 #### Open MysqlShell
 (make sure you are in JS mode type \js)
-- Create a new user
-    `\connect root@localhost` -password was created on install.
-    `\sql`
-    `CREATE USER 'newuser'@'%' IDENTIFIED BY 'newpassword';`
-    `GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'%';`
-    `FLUSH PRIVILEGES;`
-    `\disconnect`
-    `\connect newuser@localhost` -enter new password
+##### Create a new user
+`\connect root@localhost` -password was created on install.
+`\sql`
+`CREATE USER 'newuser'@'%' IDENTIFIED BY 'newpassword';`
+`GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'%';`
+`FLUSH PRIVILEGES;`
+`\disconnect`
+`\connect newuser@localhost` -enter new password
 
-#### Create a new Database
+##### Create a new Database
 - `CREATE DATABASE newdatabase;`
 - `SHOW DATABASES;`   - it will show up in list if working
+
+##### Create tables
 ```
 CREATE TABLE `services` (
     `passID` int NOT NULL AUTO_INCREMENT,
@@ -59,20 +61,20 @@ CREATE TABLE `services` (
     KEY `userID` (`userID`),
     CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
-
-
-- ``CREATE TABLE `services` (
-        `passID` int NOT NULL AUTO_INCREMENT,
-        `userID` int NOT NULL,
-        `service` varchar(25) NOT NULL,
-        `encryptedPassword` varchar(128) NOT NULL,
-        `guid` varchar(36) NOT NULL,
-        `creationDate` datetime NOT NULL,
-        PRIMARY KEY (`passID`),
-        UNIQUE KEY `passID_UNIQUE` (`passID`),
-        UNIQUE KEY `guid_UNIQUE` (`guid`),
-        KEY `userID` (`userID`),
-        CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;``
+```
+CREATE TABLE `services` (
+    `passID` int NOT NULL AUTO_INCREMENT,
+    `userID` int NOT NULL,
+    `service` varchar(25) NOT NULL,
+    `encryptedPassword` varchar(128) NOT NULL,
+    `guid` varchar(36) NOT NULL,
+    `creationDate` datetime NOT NULL,
+    PRIMARY KEY (`passID`),
+    UNIQUE KEY `passID_UNIQUE` (`passID`),
+    UNIQUE KEY `guid_UNIQUE` (`guid`),
+    KEY `userID` (`userID`),
+    CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+```
 - `SHOW TABLES` - services and users should show up
 
 #### Configure .my.cnf
