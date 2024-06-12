@@ -36,11 +36,17 @@ A secure way to manage passwords on a local machine.
 
 ##### Create a new user
 ```\connect root@localhost``` - *password was created on install*
+
 ```\sql```
+
 ```CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';```
+
 ```GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';```
+
 ```FLUSH PRIVILEGES;```
+
 ```\disconnect```
+
 ```\connect {newuser}@localhost``` - *enter new password*
 
 ##### Create a new Database
