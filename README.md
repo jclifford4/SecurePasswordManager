@@ -13,9 +13,9 @@ A secure way to manage passwords on a local machine.
 4. Enter a database name that will be used later
 5. Save the file and close it
 6. Open Powershell where .my.cnf is located
-- This can be done by `shift + rclick` within the folder, select `open Powershell window here`
+    - This can be done by `shift + rclick` within the folder, select `open Powershell window here`
 7. Encrypt the file
--`cipher /e .\.my.cnf` - this will encrypt the file
+    -`cipher /e .\.my.cnf` - this will encrypt the file
 
 3. Install MySQL Community 8.0.37 or higher
     - https://dev.mysql.com/downloads/installer/
