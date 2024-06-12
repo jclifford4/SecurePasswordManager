@@ -1021,7 +1021,7 @@ namespace ProgramPrompts
                 };
 
             Random random = new Random();
-            int index = random.Next(0, 10);
+            int index = random.Next(welcomes.Length);
 
             string message = welcomes[index];
 
@@ -1042,13 +1042,10 @@ namespace ProgramPrompts
                 YELLOW + "Have a great day, " + BLUE + $"{username}!"+ RESET,
                 YELLOW + "Stay safe, " + BLUE + $"{username}!"+ RESET,
                 YELLOW + "Goodbye, " + BLUE + $"{username}!" + YELLOW + "May the darkness shield your secrets." + RESET,
-                YELLOW + "Goodbye, " + BLUE + $"{username}!" + YELLOW + "May the darkness shield your secrets." + RESET,
-                YELLOW + "Goodbye, " + BLUE + $"{username}!" + YELLOW + "May the darkness shield your secrets." + RESET
-
             };
 
             Random random = new Random();
-            int index = random.Next(0, 10);
+            int index = random.Next(goodbyes.Length);
 
             string message = goodbyes[index];
 
