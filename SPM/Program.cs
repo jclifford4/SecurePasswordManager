@@ -24,6 +24,7 @@ namespace Main
                     Prompt.StartUp();
                     Prompt.Help();
                     isFirstStarup = false;
+                    Console.WriteLine();
                 }
 
                 Prompt.SPMIndicator();
@@ -38,7 +39,9 @@ namespace Main
                     break;
 
             }
+            Prompt.TypeMessage(Prompt.ProgramGoodbyeMessage() + "\n\n\n\n\n");
             Console.Write(Prompt.RESET);
+            // Thread.Sleep(4000);
         }
     }
 }

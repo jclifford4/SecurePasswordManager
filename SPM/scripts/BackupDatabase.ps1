@@ -45,8 +45,8 @@ if (-not (Test-Path $backupPath)) {
 $backupFile = Join-Path -Path $backupPath -ChildPath "$database-$(Get-Date -Format 'yyyyMMddHHmmss').sql"
 
 # Full path to the mysqldump executable
-# TODO: $mysqlPath = "$env:MYSQL_Commands/mysqldump.exe"
-$mysqldumpPath = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe"
+$mysqldumpPath = "$env:MYSQL_Commands/mysqldump.exe"
+# $mysqldumpPath = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe"
 
 # Construct the mysqldump command arguments
 # $args = @("--defaults-extra-file=$configFilePath", "$database")

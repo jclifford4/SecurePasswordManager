@@ -1,3 +1,4 @@
+using System.Dynamic;
 using EncryptionUtility;
 using HashUtility;
 using Microsoft.AspNetCore.Identity;
@@ -32,25 +33,32 @@ namespace ProgramPrompts
             string file = "art/logoansi.ans";
             try
             {
+                Console.CursorVisible = false;
                 using (StreamReader reader = new StreamReader(file))
                 {
                     string line;
+
                     while ((line = reader.ReadLine()) != null)
                     {
-                        Console.WriteLine(line);
+                        // Console.WriteLine(line);
+                        TypeMessageWithTime(line, 10);
                     }
+                    Console.WriteLine();
+                    Console.CursorVisible = true;
+
                 }
             }
             catch (Exception ex)
             {
+                Console.CursorVisible = true;
                 HandleException(ex);
             }
-            Console.WriteLine(YELLOW + "[-----Secure Password Manager-----]" + RESET);
+            Console.WriteLine(YELLOW + "  [-----Secure Password Manager-----]" + RESET);
         }
 
         public static void Help()
         {
-            Console.WriteLine(YELLOW + "      [h -help q -quit]" + RESET);
+            Console.WriteLine(YELLOW + "\t  [h -help q -quit]" + RESET);
         }
 
         public static void PromptForUsername()
@@ -297,24 +305,45 @@ namespace ProgramPrompts
                     var (isLoggedIn, username) = Login();
                     if (isLoggedIn)
                     {
-                        Console.WriteLine(GREEN + "\nLogged in!" + RESET);
-                        Console.WriteLine(YELLOW + "--------------------" + RESET);
-                        Thread.Sleep(500);
-                        ClearConsole();
+
+                        Console.CursorVisible = false;
+                        string[] spinner = { "/", "-", "\\", "|" }; // Characters for spinning animation
+                        for (int i = 0; i < 20; i++)
+                        {
+                            if (i < 8)
+                            {
+                                Console.Write(RED + spinner[i % spinner.Length] + RESET);
+                                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); // Move cursor back
+                            }
+                            if (i > 8 && i < 14)
+                            {
+                                Console.Write(YELLOW + spinner[i % spinner.Length] + RESET);
+                                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); // Move cursor back
+                            }
+                            else
+                            {
+                                Console.Write(GREEN + spinner[i % spinner.Length] + RESET);
+                                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); // Move cursor back
+                            }
+
+                            Thread.Sleep(100); // Adjust sleep time for speed of animation
+
+                        }
+                        Console.CursorVisible = true;
+                        // Console.WriteLine("\n\t" + WelcomeMessage(username) + "\n");
+                        TypeMessage(WelcomeMessage(username) + "\n");
+                        // ClearConsole();
 
                         while (isLoggedIn)
                         {
                             SPMUserIndicator(username);
+                            Console.Write(CYAN);
                             isLoggedIn = LoginOptions(username, GetNonSensitiveConsoleText());
 
 
                             if (!isLoggedIn)
                                 break;
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine(RED + "\nLogin Error" + RESET);
                     }
                     Console.WriteLine();
                     break;
@@ -339,7 +368,7 @@ namespace ProgramPrompts
                     break;
 
                 default:
-                    Console.WriteLine(RED + $"{input} is not a valid command");
+                    Console.WriteLine(RED + $"{input} is not a valid command\n");
                     break;
             }
 
@@ -362,7 +391,33 @@ namespace ProgramPrompts
                 string serviceName = string.Empty;
                 if (input.StartsWith("out", StringComparison.Ordinal))
                 {
-                    Console.WriteLine(RED + $"Logged out!" + RESET);
+                    // Console.WriteLine("\n\t" + GoodbyeMessage(username) + "\n");
+                    TypeMessage(GoodbyeMessage(username));
+                    Console.CursorVisible = false;
+                    string[] spinner = { "/", "-", "\\", "|" }; // Characters for spinning animation
+                    for (int i = 0; i < 20; i++)
+                    {
+                        if (i < 8)
+                        {
+                            Console.Write(GREEN + spinner[i % spinner.Length] + RESET);
+                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); // Move cursor back
+                        }
+                        if (i > 8 && i < 14)
+                        {
+                            Console.Write(YELLOW + spinner[i % spinner.Length] + RESET);
+                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); // Move cursor back
+                        }
+                        else
+                        {
+                            Console.Write(RED + spinner[i % spinner.Length] + RESET);
+                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop); // Move cursor back
+                        }
+
+                        Thread.Sleep(100); // Adjust sleep time for speed of animation
+
+                    }
+                    Console.WriteLine();
+                    Console.CursorVisible = true;
                     return false;
 
                 }
@@ -388,12 +443,11 @@ namespace ProgramPrompts
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        Console.WriteLine(RED + "Empty service name\n" + RESET);
                         return true;
                     }
 
                     Console.WriteLine(YELLOW + "-----New Service-----" + RESET);
-                    Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
 
                     // Get userID
                     int userID = userRepositoryAcessor.GetUserIDByUserName(username);
@@ -401,10 +455,11 @@ namespace ProgramPrompts
                     // Check service exists
                     if (serviceRepoAccessor.ServiceExistsByUserID(serviceName, userID))
                     {
-                        Console.WriteLine(RED + $"\"{serviceName}\" already exists " + RESET);
+                        Console.WriteLine(RED + $"\"{serviceName}\" already exists\n" + RESET);
                         return true;
                     }
 
+                    Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
                     // Prompt service password
                     PromptForPassword();
                     string password = HashUtil.ReadPassword();
@@ -447,7 +502,7 @@ namespace ProgramPrompts
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        Console.WriteLine(RED + "Empty service name\n" + RESET);
                         return true;
                     }
 
@@ -457,7 +512,7 @@ namespace ProgramPrompts
                     // Check service exists
                     if (!serviceRepoAccessor.ServiceExistsByUserID(serviceName, userID))
                     {
-                        Console.WriteLine(RED + $"\"{serviceName}\" does not exists " + RESET);
+                        Console.WriteLine(RED + $"\"{serviceName}\" does not exist\n" + RESET);
                         return true;
                     }
 
@@ -504,7 +559,7 @@ namespace ProgramPrompts
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        Console.WriteLine(RED + "Empty service name\n" + RESET);
                         return true;
                     }
 
@@ -516,7 +571,7 @@ namespace ProgramPrompts
                     // Check service exists
                     if (!serviceRepoAccessor.ServiceExistsByUserID(serviceName, userID))
                     {
-                        Console.WriteLine(RED + $"\"{serviceName}\" does not exist " + RESET);
+                        Console.WriteLine(RED + $"\"{serviceName}\" does not exist\n" + RESET);
                         return true;
                     }
 
@@ -546,7 +601,8 @@ namespace ProgramPrompts
                         Console.Write(BLUE + "Deleting.." + RESET);
                         Thread.Sleep(200);
                         Console.Write(GREEN + "Deleted!" + RESET);
-                        Console.WriteLine();
+                        Console.WriteLine(YELLOW + "------------------------\n" + RESET);
+
                     }
                     else
                     {
@@ -563,7 +619,7 @@ namespace ProgramPrompts
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine(RED + "Empty service name" + RESET);
+                        Console.WriteLine(RED + "Empty service name\n" + RESET);
                         return true;
                     }
 
@@ -599,7 +655,7 @@ namespace ProgramPrompts
                         throw new SimpleException("Could not get password");
 
                     Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
-                    Console.WriteLine(GREEN + $"Password: {EncryptionUtil.DecryptString(encrypted)}");
+                    Console.WriteLine(GREEN + $"Password: {EncryptionUtil.DecryptString(encrypted)}\n");
 
 
                     return true;
@@ -625,7 +681,7 @@ namespace ProgramPrompts
                     {
                         Console.WriteLine(BLUE + $"{pair.Item1.PadRight(15)}: {pair.Item2.PadRight(20)}" + RESET);
                     }
-                    Console.WriteLine(YELLOW + "----------------------" + RESET);
+                    Console.WriteLine(YELLOW + "----------------------\n" + RESET);
 
                     return true;
                 }
@@ -723,12 +779,12 @@ namespace ProgramPrompts
                         return true;
                     }
 
-                    Console.WriteLine(YELLOW + "--------------------------" + RESET);
+                    Console.Write(YELLOW + "--------------------------" + RESET);
 
                     if (!userRepositoryAcessor.RestoreWithScript(fileName))
                         throw new SimpleException("Error reverting datbase");
 
-                    Console.Write(GREEN + "Database restored successfully." + RESET);
+                    Console.Write(GREEN + "Database restored successfully.\n" + RESET);
 
                     if (!userRepositoryAcessor.UsernameExists(username))
                     {
@@ -740,15 +796,32 @@ namespace ProgramPrompts
                     return true;
 
                 }
+                else if (input.StartsWith("keygen", StringComparison.Ordinal))
+                {
+                    string key = EncryptionUtil.GenerateSecureKey();
+                    Console.Write(YELLOW);
+                    for (int i = 0; i < key.Length; i++)
+                        Console.Write("-");
+
+                    Console.WriteLine("\n" + BLUE + key);
+
+                    Console.Write(YELLOW);
+                    for (int i = 0; i < key.Length; i++)
+                        Console.Write("-");
+                    Console.Write("\n\n" + RESET);
+
+                    return true;
+                }
                 else
                 {
-                    throw new SimpleException(RED + $"{input} is not a command" + RESET);
+                    throw new SimpleException(RED + $"{input} is not a command\n" + RESET);
                 }
             }
             catch (SimpleException ex)
             {
                 // Console.WriteLine("\n" + RED + ex + RESET);
                 HandleException(ex);
+
                 return true;
             }
             catch (Exception ex)
@@ -773,7 +846,7 @@ namespace ProgramPrompts
                 string username = GetSensitiveUsernameConsoleText();
                 Console.Write(RESET);
                 if (!userRepoAcess.UsernameExists(username))
-                    throw new SimpleException($"Username {username} does not exist");
+                    throw new SimpleException($"Username \"{username}\" does not exist");
 
                 // Get comparison password
                 PromptForPassword();
@@ -785,7 +858,18 @@ namespace ProgramPrompts
 
                 if (isHash)
                 {
-                    return (UserUtil.VerifyHashedPassword(username, password, hash), username);
+                    var (isValid, name) = (UserUtil.VerifyHashedPassword(username, password, hash), username);
+
+                    if (!isValid)
+                    {
+                        // Console.WriteLine("\n" + WrongPasswordMessage());
+                        TypeMessage(WrongPasswordMessage() + "\n");
+                        return (false, name);
+                    }
+
+                    Console.WriteLine(YELLOW + "\n--------------------" + RESET);
+
+                    return (true, name);
                 }
 
                 throw new SimpleException("User does not exist");
@@ -809,8 +893,9 @@ namespace ProgramPrompts
             File.WriteAllText("error_log.txt", ex.ToString());
 
             // Display simplified message to the user
-            Console.WriteLine(RED + $"Error: {ex.Message}" + RESET);
-            Console.WriteLine(RED + "StackTrace: [Stack trace hidden]" + RESET);
+            Console.WriteLine(RED + $"{ex.Message}" + RESET);
+
+            // Console.WriteLine(RED + "StackTrace: [Stack trace hidden]" + RESET);
         }
 
         internal static void ShowHelpCommands()
@@ -820,15 +905,15 @@ namespace ProgramPrompts
                 YELLOW + "cr" + RESET + " :" + BLUE + " Create a new user profile. Prompts user for a unique username and a master password\n" +
                 YELLOW + "cl" + RESET + " :" + BLUE + " Clear console\n" +
                 YELLOW + "lg" + RESET + " :" + BLUE + " Login to a user profile. Allows access to saved service passwords. Other commands are available\n" +
-                      YELLOW + "\tnew" + RED + " {serivce name}" + RESET + " :" + BLUE + " Add a new service password\n" +
-                      YELLOW + "\tupd" + RED + " {serivce name}" + RESET + " :" + BLUE + " Update a current service password\n" +
-                      YELLOW + "\tdel" + RED + " {serivce name}" + RESET + " :" + BLUE + " Delete service from profile\n" +
-                      YELLOW + "\tlsp" + RED + " {serivce name}" + RESET + " :" + BLUE + " List user password for 'service name'\n" +
-                      YELLOW + "\tlsn" + RESET + " :" + BLUE + " List all user service names\n" +
-                      YELLOW + "\tbup" + RESET + " :" + BLUE + " Backup Database\n" +
-                      YELLOW + "\trev" + RESET + " :" + BLUE + " Revert to a recent databse version\n" +
-                      YELLOW + "\tout" + RESET + " :" + BLUE + " Log out of profile\n" +
-                      YELLOW + "\tkll" + RESET + " :" + BLUE + " Delete User and all passwords\n" +
+                      CYAN + "\tnew" + RED + " {serivce name}" + RESET + " :" + BLUE + " Add a new service password\n" +
+                      CYAN + "\tupd" + RED + " {serivce name}" + RESET + " :" + BLUE + " Update a current service password\n" +
+                      CYAN + "\tdel" + RED + " {serivce name}" + RESET + " :" + BLUE + " Delete service from profile\n" +
+                      CYAN + "\tlsp" + RED + " {serivce name}" + RESET + " :" + BLUE + " List user password for 'service name'\n" +
+                      CYAN + "\tlsn" + RESET + " :" + BLUE + " List all user service names\n" +
+                      CYAN + "\tbup" + RESET + " :" + BLUE + " Backup Database\n" +
+                      CYAN + "\trev" + RESET + " :" + BLUE + " Revert to a recent databse version\n" +
+                      CYAN + "\tout" + RESET + " :" + BLUE + " Log out of profile\n" +
+                      CYAN + "\tkll" + RESET + " :" + BLUE + " Delete User and all passwords\n" +
                 YELLOW + "lu" + RESET + " :" + BLUE + " List all users.\n" +
                 YELLOW + " h" + RESET + " :" + BLUE + " Display commands\n" +
                 YELLOW + " q" + RESET + " :" + BLUE + " Exit program\n"
@@ -911,8 +996,154 @@ namespace ProgramPrompts
             return true;
         }
 
+        internal static string WelcomeMessage(string username)
+        {
+            var welcomes = new string[]
+                {
+                    YELLOW + "Welcome, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Hello, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Hi, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Greetings, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Welcome back, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Hi there, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Hey pal, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Good to see you, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Welcome aboard, " + BLUE + $"{username}!" + RESET,
+                    YELLOW + "Great, it's " + BLUE + $"{username} " + YELLOW + "again. Try not to break anything this time." + RESET,
+                    YELLOW + "Oh, it's you again. What do you want this time, " + BLUE + $"{username}" + YELLOW + "?" + RESET,
+                    YELLOW + "Look who decided to grace us with their presence. Welcome back, " + BLUE + $"{username}" + YELLOW + "." + RESET,
+                    YELLOW + "Oh joy, it's " + BLUE + $"{username}" + YELLOW + ". What a delightful surprise." + RESET,
+                    YELLOW + "Ahoy, " + BLUE + $"{username}" + YELLOW + "... Beware the whispers of the forgotten souls that linger here." + RESET,
+                    YELLOW + "Welcome, " + BLUE + $"{username}" + YELLOW + "! You're here, so I guess we're stuck with you. Enjoy your stay!" + RESET,
+                    YELLOW + "Greetings, " + BLUE + $"{username}" + YELLOW + "! We accept all kinds here, even the ones who can't read signs." + RESET,
+                    YELLOW + "Welcome, " + BLUE + $"{username}" + YELLOW + "... Prepare to lose yourself in the labyrinth of despair." + RESET,
+                    YELLOW + "Hi, " + BLUE + $"{username}" + YELLOW + "! Great to see you!" + RESET
+                };
 
+            Random random = new Random();
+            int index = random.Next(0, 10);
 
+            string message = welcomes[index];
 
+            return message;
+        }
+        internal static string GoodbyeMessage(string username)
+        {
+            var goodbyes = new string[]
+            {
+                YELLOW + "Goodbye, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "See you later, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Take care, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Farewell, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Until next time, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Bye, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Catch you later, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "So long, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Have a great day, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Stay safe, " + BLUE + $"{username}!"+ RESET,
+                YELLOW + "Goodbye, " + BLUE + $"{username}!" + YELLOW + "May the darkness shield your secrets." + RESET,
+                YELLOW + "Goodbye, " + BLUE + $"{username}!" + YELLOW + "May the darkness shield your secrets." + RESET,
+                YELLOW + "Goodbye, " + BLUE + $"{username}!" + YELLOW + "May the darkness shield your secrets." + RESET
+
+            };
+
+            Random random = new Random();
+            int index = random.Next(0, 10);
+
+            string message = goodbyes[index];
+
+            return message;
+        }
+
+        internal static string WrongPasswordMessage()
+        {
+            string[] messages =
+            {
+                YELLOW + "Oops! Wrong password. Did you forget it again?" + RESET,
+                YELLOW + "Nope, try again! Maybe the caps lock is on?" + RESET,
+                YELLOW + "That's not it. Did your cat walk over the keyboard?" + RESET,
+                YELLOW + "Access denied. Are you sure you're you?" + RESET,
+                YELLOW + "Nice try, but no. Time to double-check your notes?" + RESET,
+                YELLOW + "Password fail! Maybe it's time for a break?" + RESET,
+                YELLOW + "Incorrect password. Did you change it and forget?" + RESET,
+                YELLOW + "Wrong again. Did you mean to type something else?" + RESET,
+                YELLOW + "Denied! Perhaps you need a little more coffee?" + RESET,
+                YELLOW + "No luck. Are you testing our security?" + RESET,
+                YELLOW + "Oops! Wrong password. Remember, every mistake is a step towards learning." + RESET,
+                YELLOW + "No worries! Keep trying. Success is just around the corner." + RESET,
+                YELLOW + "Not quite there! Persistence is key. Keep going!" + RESET,
+                YELLOW + "Incorrect password, but don't lose heart! You're making progress with every attempt." + RESET,
+                YELLOW + "Brute force, huh? Impressive! But our server needs a breather." + RESET,
+                YELLOW + "Brute force detected! Maybe try knocking next time?" + RESET,
+                YELLOW + "Oh, you're trying to break in? Sorry, our system prefers sweet talk over brute force." + RESET,
+                YELLOW + "Unauthorized access attempt! Looks like someone's keyboard is on fire from all the furious typing." + RESET,
+                YELLOW + "Hackerman in action! But don't worry, our security is as tough as grandma's cookies." + RESET,
+                YELLOW + "Yawn! That password is about as exciting as watching paint dry." + RESET,
+                YELLOW + "Hmm... Did you choose that password while counting sheep?" + RESET,
+             };
+
+            Random random = new Random();
+            int index = random.Next(messages.Length);
+
+            string message = messages[index];
+
+            return message;
+        }
+        public static string ProgramGoodbyeMessage()
+        {
+            string[] messages =
+            {
+                YELLOW + "¡Hasta luego! Que tengas un buen día." + RESET,
+                YELLOW + "Goodbye! Have a great day." + RESET,
+                YELLOW + "See you later! Take care." + RESET,
+                YELLOW + "Farewell! Until we meet again." + RESET,
+                YELLOW + "Bye for now! Stay safe" + RESET,
+                YELLOW + "Take care! See you soon." + RESET,
+                YELLOW + "Smell ya later, alligator!" + RESET,
+                YELLOW + "Goodbye, mortal. Beware the shadows." + RESET,
+                YELLOW + "Farewell, traveler. The darkness awaits." + RESET,
+                YELLOW + "Bye for now. Remember, the monsters come out at night." + RESET,
+                YELLOW + "See you never... in this world or the next." + RESET,
+                YELLOW + "Goodbye for now. Remember to cherish every moment." + RESET,
+                YELLOW + "Farewell, but remember, every ending is a new beginning." + RESET,
+                YELLOW + "Until we meet again. Let the lessons of today guide you into tomorrow." + RESET,
+                YELLOW + "Farewell! Remember, every setback is a setup for a comeback." + RESET,
+                YELLOW + "Bye for now! You're stronger than you think. Keep going!" + RESET,
+                YELLOW + "See you later! Believe in yourself and your dreams." + RESET,
+                YELLOW + "Bye." + RESET,
+             };
+
+            Random random = new Random();
+            int index = random.Next(messages.Length);
+
+            string message = messages[index];
+
+            return message;
+        }
+
+        public static void TypeMessage(string message)
+        {
+            Console.Write("\n\t");
+            foreach (char c in message)
+            {
+                Console.Write(c);
+                if (message.Length < 20)
+                    Thread.Sleep(65); // Adjust the delay as needed
+                else
+                    Thread.Sleep(30);
+            }
+
+            Console.WriteLine(); // Move to the next line after typing the text
+        }
+        public static void TypeMessageWithTime(string message, int milis)
+        {
+            Console.Write("\n");
+            foreach (char c in message)
+            {
+                Console.Write(c);
+            }
+            Thread.Sleep(20); // Adjust the delay as needed
+
+        }
     }
 }

@@ -44,8 +44,8 @@ if (-not (Test-Path $backupPath)) {
 }
 
 # Full path to the mysql executable
-# TODO: $mysqlPath = "$env:MYSQL_Commands/mysql.exe"
-$mysqlPath = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
+$mysqlPath = "$env:MYSQL_Commands/mysql.exe"
+# $mysqlPath = "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
 
 $backupFilePath = $backupPath + $BackupFile
 
