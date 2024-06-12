@@ -45,7 +45,7 @@ A secure way to manage passwords on a local machine.
 #### Create a new Database
 - `CREATE DATABASE newdatabase;`
 - `SHOW DATABASES;`   - it will show up in list if working
-        CREATE TABLE `services` (
+        ``CREATE TABLE `services` (
             `passID` int NOT NULL AUTO_INCREMENT,
             `userID` int NOT NULL,
             `service` varchar(25) NOT NULL,
@@ -56,7 +56,7 @@ A secure way to manage passwords on a local machine.
             UNIQUE KEY `passID_UNIQUE` (`passID`),
             UNIQUE KEY `guid_UNIQUE` (`guid`),
             KEY `userID` (`userID`),
-            CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users`       (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users`       (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;``
 - ``CREATE TABLE `services` (
         `passID` int NOT NULL AUTO_INCREMENT,
         `userID` int NOT NULL,
