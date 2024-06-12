@@ -1,12 +1,12 @@
 # Secure Password Manager
 A secure way to manage passwords on a local machine.
 
-## ---Windows Installation---
-1. Run SPM.exe
-    - type `keygen` and copy the genrated hash
-    - type `q` to quit the program
+## Windows Installation
+### Run SPM.exe
+- type `keygen` and copy the genrated hash
+- type `q` to quit the program
 
-2. Open a .my.cnf file
+2. Configure .my.cnf file
     i. Add your info
     - [other]
     - database=`{your_db_name}`
@@ -76,10 +76,10 @@ A secure way to manage passwords on a local machine.
             - Add `MYSQL_COMMANDS` with value `path\to\mysqlserver\bin\`
             - Add `POWERSHELL` = `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`
 
-4. Install Windows Terminal
+### Install Windows Terminal
     - It can be found in microsoft store for free if you search `Windows Terminal`
-    Run this command to create a secure configuration file for database password :
-        "./mysql_config_editor set --login-path=client --host=localhost --user=your_username --password"
+    - Run this command to create a secure configuration file for database password :
+`./mysql_config_editor set --login-path=client --host=localhost --user=your_username --password`
         - it will prompt you to enter a user password to login, (usually stored in ROAMING\APPDATA)
 
     
