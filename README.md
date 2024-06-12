@@ -35,9 +35,15 @@ A secure way to manage passwords on a local machine.
 - make sure you are in JS mode type `\js`
 
 ##### Create a new user
-```\connect root@localhost``` - *password was created on install*
+```
+\connect root@localhost
+``` 
+- *password was created on install*
 
-```\sql```
+```
+\sql
+```
+
 
 ```CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';```
 
