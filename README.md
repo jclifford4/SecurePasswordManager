@@ -7,15 +7,15 @@ A secure way to manage passwords on a local machine.
 - type `q` to quit the program
 
 ### Configure .my.cnf file
-1. Go to scripts folder
-2. Open .my.cnf file
-3. Paste your key from `keygen` command
-4. Enter a database name that will be used later
-5. Save the file and close it
-6. Open Powershell where .my.cnf is located
-    - This can be done by `shift + rclick` within the folder, select `open Powershell window here`
-7. Encrypt the file
-    -`cipher /e .\.my.cnf` - this will encrypt the file
+-  Go to scripts folder
+-  Open .my.cnf file
+-  Paste your key from `keygen` command
+-  Enter a database name that will be used later
+-  Save the file and close it
+-  Open Powershell where .my.cnf is located
+    - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***
+-  Encrypt the file
+    - `cipher /e .\.my.cnf` - this will encrypt the file
 
 3. Install MySQL Community 8.0.37 or higher
     - https://dev.mysql.com/downloads/installer/
