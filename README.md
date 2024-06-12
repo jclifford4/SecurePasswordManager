@@ -43,17 +43,23 @@ A secure way to manage passwords on a local machine.
 ```
 \sql
 ```
-
-
-```CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';```
-
-```GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';```
-
-```FLUSH PRIVILEGES;```
-
-```\disconnect```
-
-```\connect {newuser}@localhost``` - *enter new password*
+```
+CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';
+```
+---
+```
+GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';
+```
+```
+FLUSH PRIVILEGES;
+```
+```
+\disconnect
+```
+```
+\connect {newuser}@localhost
+``` 
+- *enter new password*
 
 ##### Create a new Database
 - `CREATE DATABASE {newdatabase};`
