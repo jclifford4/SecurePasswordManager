@@ -13,7 +13,7 @@ A secure way to manage passwords on a local machine.
 - type `q` to quit the program
 
 ### Configure .my.cnf file
--  Go to scripts folder
+-  Go to scripts directory
 -  Open **.my.cnf** file
 -  Paste your key from `keygen` command
 -  Enter a database name that will be used later
@@ -32,18 +32,19 @@ A secure way to manage passwords on a local machine.
 - Keep shell checked
 
 #### Open MysqlShell
-(make sure you are in JS mode type \js)
+- make sure you are in JS mode type `\js`
+
 ##### Create a new user
-`\connect root@localhost` -password was created on install.
-`\sql`
-`CREATE USER 'newuser'@'%' IDENTIFIED BY 'newpassword';`
-`GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'%';`
-`FLUSH PRIVILEGES;`
-`\disconnect`
-`\connect newuser@localhost` -enter new password
+- `\connect root@localhost` -password was created on install.
+- `\sql`
+- `CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';`
+- `GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';`
+- `FLUSH PRIVILEGES;`
+- `\disconnect`
+- `\connect {newuser}@localhost` -enter new password
 
 ##### Create a new Database
-- `CREATE DATABASE newdatabase;`
+- `CREATE DATABASE {newdatabase};`
 - `SHOW DATABASES;`   - it will show up in list if working
 
 ##### Create tables
@@ -90,7 +91,7 @@ CREATE TABLE `services` (
 - file is saved in: "C:\Users\{your_username}\AppData\Roaming\MySQL\.mylogin.cnf"
 
 ## Add Environment Variables
-- Add `MYSQL_COMMANDS` with value `path\to\mysqlserver\bin\`
+- Add `MYSQL_COMMANDS` with value `{path\to\mysqlserver\bin\}`
 - Add `POWERSHELL` with value `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`
 
 
