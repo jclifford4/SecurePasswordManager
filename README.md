@@ -21,7 +21,7 @@ A secure way to manage passwords on a local machine.
 -  Open Powershell where .my.cnf is located
     - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***
 -  Encrypt the file
-    - `cipher /e .\.my.cnf` - this will encrypt the file
+    - `cipher /e .\.my.cnf` - *this will encrypt the file*
 
 ### Install MySQL Community 8.0.37 or higher
 - https://dev.mysql.com/downloads/installer/
@@ -35,17 +35,17 @@ A secure way to manage passwords on a local machine.
 - make sure you are in JS mode type `\js`
 
 ##### Create a new user
-- `\connect root@localhost` -password was created on install.
+```\connect root@localhost``` - *password was created on install*
 - `\sql`
 - `CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';`
 - `GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';`
 - `FLUSH PRIVILEGES;`
 - `\disconnect`
-- `\connect {newuser}@localhost` -enter new password
+- `\connect {newuser}@localhost` - *enter new password*
 
 ##### Create a new Database
 - `CREATE DATABASE {newdatabase};`
-- `SHOW DATABASES;`   - it will show up in list if working
+- `SHOW DATABASES;`   - *{newdatabase} should be listed*
 
 ##### Create tables
 ```
@@ -85,7 +85,9 @@ CREATE TABLE `services` (
         - save the file and close it
 #### Configuration mylogin.cnf
 - Go to mysql installation files, usually found in: 
-    `C:\Program Files\MySQL\MySQL Server 8.0\bin\`
+```
+C:\Program Files\MySQL\MySQL Server 8.0\bin\
+```
 - Open Terminal in the bin directory and paste with your database username:
     `./mysql_config_editor set --login-path=client --host=localhost --user={your_username} --password`
 - file is saved in: "C:\Users\{your_username}\AppData\Roaming\MySQL\.mylogin.cnf"
