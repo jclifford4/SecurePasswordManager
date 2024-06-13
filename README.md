@@ -4,6 +4,7 @@ A secure way to manage passwords on a local machine.
 ---
 # About
 <details>
+<summary>Important information</summary>
 
 ### Passwords
 ***Plaintext passwords are never saved.***
@@ -14,8 +15,10 @@ A secure way to manage passwords on a local machine.
 </details>
 
 ---
-
 ## Windows Installation
+<details>
+<summary>Guide
+
 ***Reminder*** : Any code snipped surrounded by `{}` will need your information.
 
 ### Install Windows Terminal
@@ -157,3 +160,5 @@ C:\Program Files\MySQL\MySQL Server 8.0\bin\
 ### Add Environment Variables :
 - Add `MYSQL_COMMANDS` with path `{path\to\mysqlserver\bin\}`
 - Add `POWERSHELL` with path `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`
+
+</details>
