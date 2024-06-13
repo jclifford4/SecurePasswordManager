@@ -22,8 +22,8 @@
 -  Enter a database name that will be used later
 -  Save the file and close it
 -  Open Powershell where .my.cnf is located
-    - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***
--  Encrypt the file
+    - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***.
+-  Encrypt the file : 
 ```shell
 cipher /e .\.my.cnf
 ``` 
