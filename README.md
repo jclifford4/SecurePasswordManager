@@ -2,6 +2,7 @@
 ## A secure way to manage passwords on a local machine.
 
 ## Windows Installation
+***Reminder*** : Any code snipped surrounded by `{}` will need your information
 
 ### Install Windows Terminal
 - It can be found in microsoft store for free if you search ***Windows Terminal***
