@@ -2,15 +2,16 @@
 A secure way to manage passwords on a local machine.
 
 ---
-
 # About
+<details>
 
 ### Passwords
 ***Plaintext passwords are never saved.***
 
-**Account Passwords**(*master password*) : are never saved. They are hashed and salted then are stored to the localdatabase only accessible by that user.
+**Account Passwords** (*master password*) : are hashed and salted then are stored to the localdatabase only accessible by that user.
 
 **Service Passwords** : are symmetrically encrypted and are stored in the local database. They can only be decrpyted by confirming the master password of the user account.
+</details>
 
 ---
 
