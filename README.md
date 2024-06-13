@@ -21,7 +21,9 @@ A secure way to manage passwords on a local machine.
 
 ***Reminder*** : Any code snipped surrounded by `{}` will need your information.
 
-### Download the latest release from the *releases* --->.
+### Download the latest [Release](https://github.com/jclifford4/SecurePasswordManager/releases).
+
+---
 
 ### Install Windows Terminal
 - It can be found in microsoft store for free if you search ***Windows Terminal***
