@@ -143,10 +143,10 @@ SHOW TABLES;
 ---
 
 ### Configure .my.cnf :
-- go to ***/scripts/.my.cnf***
-- edit in your database name
-- edit where you want to save database backup files
-- save the file and close it
+- Open ***/scripts/.my.cnf***
+- Edit in your database name
+- Edit where you want to save database backup files
+- Save the file and close it
 
 --- 
 
