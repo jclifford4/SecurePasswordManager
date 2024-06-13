@@ -10,8 +10,8 @@
 ---
 
 ### Run SPM.exe
-- type `keygen` and copy the genrated hash
-- type `q` to quit the program
+- type `keygen` and copy the genrated hash.
+- type `q` to quit the program.
 
 ---
 
