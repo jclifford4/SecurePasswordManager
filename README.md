@@ -40,53 +40,51 @@ cipher /e .\.my.cnf
 
 ---
 
-### Open MysqlShell
+### Open MysqlShell :
 - make sure you are in JS mode type `\js`
 
-##### Connect with root
+##### Connect with root :
 - *password was created on install*
 ```sql
 \connect root@localhost
 ``` 
-##### Change to sql mode
+##### Change to sql mode :
 ```sql
 \sql
 ```
-##### Create a new user 
+##### Create a new user :
 ```sql
 CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';
 ```
-##### Grant and Flush privileges:
+##### Grant and Flush privileges :
 ```sql
 GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';
 ```
-
 ```sql
 FLUSH PRIVILEGES;
 ```
-
 ```sql
 \disconnect
 ```
 
-##### Connect with your user:
+##### Connect with your user :
 ```sql
 \connect {newuser}@localhost
 ```
 
 ---
 
-#### Create a new Database
+#### Create a new Database :
 ```sql
 CREATE DATABASE {newdatabase};
 ```
 
-#### Display new database
+#### Vefify new database exists : 
 ```sql
 SHOW DATABASES;
 ```   
 
-#### Create users table
+#### Create users table :
 ```sql
 CREATE TABLE `users` (
   `userID` int NOT NULL AUTO_INCREMENT,
@@ -100,7 +98,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `guid_UNIQUE` (`guid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
-#### Create services table
+#### Create services table :
 ```sql
 CREATE TABLE `services` (
     `passID` int NOT NULL AUTO_INCREMENT,
@@ -115,7 +113,7 @@ CREATE TABLE `services` (
     KEY `userID` (`userID`),
     CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
-#### Verify tables wer created
+#### Verify tables were created :
 
 ```sql
 SHOW TABLES;
@@ -123,7 +121,7 @@ SHOW TABLES;
 
 ---
 
-### Configure .my.cnf 
+### Configure .my.cnf :
 - go to ***/scripts/.my.cnf***
 - edit in your database name
 - edit where you want to save database backup files
@@ -131,7 +129,7 @@ SHOW TABLES;
 
 --- 
 
-### Configuration mylogin.cnf
+### Configuration mylogin.cnf :
 - Go to mysql installation files, usually found in: 
 ```
 C:\Program Files\MySQL\MySQL Server 8.0\bin\
@@ -142,6 +140,6 @@ C:\Program Files\MySQL\MySQL Server 8.0\bin\
 ```
 - file is saved in: ***C:\Users\{your_username}\AppData\Roaming\MySQL\.mylogin.cnf***
 
-### Add Environment Variables
-- Add `MYSQL_COMMANDS` with value `{path\to\mysqlserver\bin\}`
-- Add `POWERSHELL` with value `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`
+### Add Environment Variables :
+- Add `MYSQL_COMMANDS` with path `{path\to\mysqlserver\bin\}`
+- Add `POWERSHELL` with path `C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe`
