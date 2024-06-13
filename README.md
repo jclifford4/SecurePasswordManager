@@ -59,6 +59,7 @@ cipher /e .\.my.cnf
 - Don't install example databases.
 - Uncheck open workbench.
 - Keep shell checked.
+- This should install `mysqlserver` and `mysqlshell`.
 
 ---
 
@@ -156,7 +157,7 @@ SHOW TABLES;
 ```
 C:\Program Files\MySQL\MySQL Server 8.0\bin\
 ```
-- Open Terminal in the bin directory and paste with your database username:
+- Open Terminal in the bin directory and paste with your database username :
 ```shell
 ./mysql_config_editor set --login-path=client --host=localhost --user={your_username} --password
 ```
