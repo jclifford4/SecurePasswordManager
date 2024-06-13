@@ -117,7 +117,7 @@ CREATE TABLE `services` (
 #### Verify tables wer created
 
 ```sql
-SHOW TABLES
+SHOW TABLES;
 ```
 
 ---
