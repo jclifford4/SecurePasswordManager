@@ -22,11 +22,12 @@ A secure way to manage passwords on a local machine.
 ***Reminder*** : Any code snipped surrounded by `{}` will need your information.
 
 ### Download the latest [Release](https://github.com/jclifford4/SecurePasswordManager/releases).
+### Unzip files into desired location.
 
 ---
 
 ### Install Windows Terminal
-- It can be found in microsoft store for free if you search ***Windows Terminal***
+- It can be found in microsoft store for free if you search ***Windows Terminal***.
 
 ---
 
@@ -37,12 +38,12 @@ A secure way to manage passwords on a local machine.
 ---
 
 ### Configure .my.cnf file
--  Go to scripts directory
--  Open ***.my.cnf*** file
--  Paste your key from `keygen` command
--  Enter a database name that will be used later
--  Save the file and close it
--  Open Powershell where .my.cnf is located
+-  Go to scripts directory.
+-  Open ***.my.cnf*** file.
+-  Paste your key from `keygen` command.
+-  Enter a database name that will be used later.
+-  Save the file and close it.
+-  Open Powershell where .my.cnf is located.
     - This can be done by `shift + rclick` within the folder, select ***open Powershell window here***.
 -  Encrypt the file : 
 ```shell
@@ -53,11 +54,11 @@ cipher /e .\.my.cnf
 
 ### Install MySQL Community 8.0.37 or higher
 - https://dev.mysql.com/downloads/installer/
-- Select Developer Install
-- Continue to make a root password
-- Don't install example databases
-- Uncheck open workbench
-- Keep shell checked
+- Select Developer Install.
+- Continue to make a root password.
+- Don't install example databases.
+- Uncheck open workbench.
+- Keep shell checked.
 
 ---
 

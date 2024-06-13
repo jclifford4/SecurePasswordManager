@@ -353,7 +353,7 @@ namespace ProgramPrompts
                     return false;
 
                 case "keygen":
-                    string key = EncryptionUtil.GenerateSecureKey();
+                    string key = Keygenerator.GenerateSecureKey();
                     Console.Write(YELLOW);
                     for (int i = 0; i < key.Length; i++)
                         Console.Write("-");
@@ -798,7 +798,7 @@ namespace ProgramPrompts
                 }
                 else if (input.StartsWith("keygen", StringComparison.Ordinal))
                 {
-                    string key = EncryptionUtil.GenerateSecureKey();
+                    string key = Keygenerator.GenerateSecureKey();
                     Console.Write(YELLOW);
                     for (int i = 0; i < key.Length; i++)
                         Console.Write("-");
@@ -887,14 +887,37 @@ namespace ProgramPrompts
             }
         }
 
+        // internal static void HandleException(Exception ex)
+        // {
+        //     // Log full exception details to a secure log file
+        //     File.WriteAllText("error_log.txt", ex.ToString());
+
+        //     // Display simplified message to the user
+        //     Console.WriteLine(RED + $"{ex.Message}" + RESET);
+
+        //     // Console.WriteLine(RED + "StackTrace: [Stack trace hidden]" + RESET);
+        // }
+
         internal static void HandleException(Exception ex)
         {
-            // Log full exception details to a secure log file
-            File.WriteAllText("error_log.txt", ex.ToString());
+            try
+            {
+                // Log full exception details to a secure log file
+                string logFilePath = "error_log.txt";
+                string logContent = $"Timestamp: {DateTime.UtcNow}\nException: {ex}\n";
+                File.AppendAllText(logFilePath, logContent);
+            }
+            catch (Exception logEx)
+            {
+                // Handle any issues that occur during logging
+                Console.WriteLine("An error occurred while logging the exception: " + logEx.Message);
+            }
 
             // Display simplified message to the user
+            string RED = "\u001b[31m";
+            string RESET = "\u001b[0m";
             Console.WriteLine(RED + $"{ex.Message}" + RESET);
-
+            // Optionally log a stack trace or other details for further debugging
             // Console.WriteLine(RED + "StackTrace: [Stack trace hidden]" + RESET);
         }
 

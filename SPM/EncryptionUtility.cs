@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using ProgramPrompts;
 namespace EncryptionUtility
 {
     public class EncryptionUtil
@@ -16,7 +17,8 @@ namespace EncryptionUtility
 
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Encryption key must be set in the environment variable.\n"
+
+                throw new SimpleException("Encryption key must be set in the environment variable.\n"
                                             + "$env:MYSQL_ENCRYPTION_KEY = \"your-32byte-base64-key\"");
             }
 
@@ -94,16 +96,27 @@ namespace EncryptionUtility
         }
 
 
-        public static string GenerateSecureKey()
-        {
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                byte[] key = new byte[32];
-                rng.GetBytes(key);
-                return Convert.ToBase64String(key);
-            }
+        // public static string GenerateSecureKey()
+        // {
+        //     try
+        //     {
+        //         using var rng = RandomNumberGenerator.Create();
+        //         byte[] key = new byte[32];
+        //         rng.GetBytes(key);
+        //         return Convert.ToBase64String(key);
+        //     }
+        //     catch (SimpleException ex)
+        //     {
+        //         Prompt.HandleException(ex);
+        //         return null;
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Prompt.HandleException(ex);
+        //         return null; ;
+        //     }
 
-        }
+        // }
 
         static string ReadEncryptionCredentials(string filePath)
         {
