@@ -17,7 +17,7 @@ A secure way to manage passwords on a local machine.
 ---
 ## Windows Installation
 <details>
-<summary>Guide
+<summary>Guide</summary>
 
 ***Reminder*** : Any code snipped surrounded by `{}` will need your information.
 
