@@ -167,7 +167,6 @@ SHOW TABLES;
 C:\Program Files\MySQL\MySQL Server 8.0\bin\
 ```
 - Open Terminal in the bin directory and paste with your database username :
-- Usually found in ***C:\Program Files\MySQL\MySQL Server 8.0\bin***.
 ```shell
 ./mysql_config_editor set --login-path=client --host=localhost --user={your_username} --password
 ```
