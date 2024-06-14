@@ -43,7 +43,7 @@ A secure way to manage passwords on a local machine.
 
 <br />
 
-***Reminder*** : Any code snipped surrounded by `{}` will need your information.
+**Reminder** : Any code snipped surrounded by `{}` will need your information.
 
 ### Download the latest [Release](https://github.com/jclifford4/SecurePasswordManager/releases).
 ### Unzip files into desired location.
