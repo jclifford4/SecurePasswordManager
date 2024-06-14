@@ -17,7 +17,12 @@ A secure way to manage passwords on a local machine.
 ---
 ## Installation
 <details>
+
+<br />
+
 <summary>Windows Guide</summary>
+
+<br />
 
 ***Reminder*** : Any code snipped surrounded by `{}` will need your information.
 
@@ -28,6 +33,7 @@ A secure way to manage passwords on a local machine.
 
 ### Install Windows Terminal
 - It can be found in microsoft store for free if you search ***Windows Terminal***.
+- Open Terminal and set it as default Terminal in settings.
 
 ---
 
@@ -77,11 +83,11 @@ cipher /e .\.my.cnf
 ```
 ##### Create a new user :
 ```sql
-CREATE USER '{newuser}'@'%' IDENTIFIED BY 'newpassword';
+CREATE USER '{your_username}'@'%' IDENTIFIED BY '{your_password}';
 ```
 ##### Grant and Flush privileges :
 ```sql
-GRANT ALL PRIVILEGES ON *.* TO '{newuser}'@'%';
+GRANT ALL PRIVILEGES ON *.* TO '{your_username}'@'%';
 ```
 ```sql
 FLUSH PRIVILEGES;
@@ -92,19 +98,24 @@ FLUSH PRIVILEGES;
 
 ##### Connect with your user :
 ```sql
-\connect {newuser}@localhost
+\connect {your_username}@localhost
 ```
 
 ---
 
 #### Create a new Database :
 ```sql
-CREATE DATABASE {newdatabase};
+CREATE DATABASE {your_database_name};
 ```
 
 #### Vefify new database exists : 
 ```sql
 SHOW DATABASES;
+```   
+
+#### Vefify new database exists : 
+```sql
+USE {your_database_name};
 ```   
 
 #### Create users table :
@@ -137,7 +148,6 @@ CREATE TABLE `services` (
     CONSTRAINT `userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 #### Verify tables were created :
-
 ```sql
 SHOW TABLES;
 ```
@@ -147,6 +157,8 @@ SHOW TABLES;
 ### Configure .my.cnf :
 - Open ***/scripts/.my.cnf***
 - Edit in your database name
+- Edit in a location for database backups
+  - Preferably in /backups folder
 - Edit where you want to save database backup files
 - Save the file and close it
 
