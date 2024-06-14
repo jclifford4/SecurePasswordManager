@@ -53,6 +53,7 @@ A secure way to manage passwords on a local machine.
 ### Install Windows Terminal
 - It can be found in microsoft store for free if you search ***Windows Terminal***.
 - Open Terminal and set it as default Terminal in settings.
+- (Optional) Change background color to a brighter/different theme for better readablility.
 
 ---
 
