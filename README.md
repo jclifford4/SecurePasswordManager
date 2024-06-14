@@ -12,7 +12,24 @@ A secure way to manage passwords on a local machine.
 **Account Passwords** (*master password*) : are hashed and salted then are stored to the localdatabase only accessible by that user.
 
 **Service Passwords** : are symmetrically encrypted and are stored in the local database. They can only be decrpyted by confirming the master password of the user account.
+<details>
+
+<summary>Storage, Hashing, & Encryption</summary>
+
+***This program uses MySQL server and MySQL Shell to store hashed and encrypted sensitive data only.***
+
+- Hashed + salted master passwords are stored for each user. These are needed to **unlock** service passwords.
+  - 100k iterations using PBKDF2
+  - PBKDF2 applies a pseudorandom function like HMAC to the input password and applies a salt iteratively.
+  - [Read More](https://en.wikipedia.org/wiki/PBKDF2#:~:text=PBKDF2%20applies%20a%20pseudorandom%20function,cryptographic%20key%20in%20subsequent%20operations)
+- Encrpted service passwords are stored and can only be unencrypted by way of the correct user master password.
+  - User generates a 32byte key converted to base64 string that acts as the symmetrical key for Encrypting & Decrypting.
+  - User can generate a new key if needed, all service passwords that used the old key will need to be updated.
+  - If old key is removed or lost, all service passwords will unable to be decrypted to their original form.
 </details>
+
+</details>
+
 
 ---
 ## Installation

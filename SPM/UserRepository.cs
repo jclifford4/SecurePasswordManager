@@ -155,7 +155,7 @@ namespace UserRepository
 
         public string[] GetBackups(string backupPath)
         {
-            return _privateDatabaseManager.GetBackups(backupPath);
+            return _privateDatabaseManager.GetBackups();
         }
 
         public bool GuidExists(string guid)
@@ -175,7 +175,8 @@ namespace UserRepository
 
         public string[] GetAllBackups()
         {
-            return _privateDatabaseManager.GetBackups(Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH"));
+
+            return _privateDatabaseManager.GetBackups();
         }
 
 
@@ -885,18 +886,20 @@ namespace UserRepository
 
 
 
-            internal string[] GetBackups(string backupPath)
+            internal string[] GetBackups()
             {
                 try
                 {
 
-                    string directoryPath = backupPath;
+                    string dbDataPath = @"scripts/.my.cnf";
+                    var (database, backup) = ReadDatabaseCredentials(dbDataPath);
 
                     // Check if the directory exists
-                    if (Directory.Exists(directoryPath))
+                    if (Directory.Exists(backup))
                     {
                         // Get all files in the directory and its subdirectories
-                        string[] fileNames = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
+
+                        string[] fileNames = Directory.GetFiles(backup, "*.*", SearchOption.AllDirectories);
 
                         return fileNames;
                     }

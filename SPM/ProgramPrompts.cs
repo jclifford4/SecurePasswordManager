@@ -481,12 +481,13 @@ namespace ProgramPrompts
                             throw new SimpleException($"Error Processing service: \"{service.Name}\"");
 
                         // Display Process
-                        Console.WriteLine(BLUE + "Encrypting.." + RESET);
+                        Console.Write(BLUE + "\nEncrypting.." + RESET);
                         Thread.Sleep(200);
                         Console.Write(BLUE + "Saving.." + RESET);
                         Thread.Sleep(200);
                         Console.Write(GREEN + "Saved!" + RESET);
-                        Console.WriteLine();
+                        Console.WriteLine(YELLOW + "------------------------\n" + RESET);
+
                     }
                     else
                         throw new SimpleException("Password Mismatch");
@@ -538,12 +539,13 @@ namespace ProgramPrompts
 
 
                         // Display Process
-                        Console.WriteLine("\n" + BLUE + "Encrypting.." + RESET);
+                        Console.Write("\n" + BLUE + "Encrypting.." + RESET);
                         Thread.Sleep(200);
                         Console.Write(BLUE + "Updating.." + RESET);
                         Thread.Sleep(200);
-                        Console.Write(GREEN + "Updated!" + RESET);
-                        Console.WriteLine();
+                        Console.Write(GREEN + "Updated!\n" + RESET);
+                        Console.WriteLine(YELLOW + "------------------------\n" + RESET);
+
                     }
                     else
                         Console.WriteLine("\n" + RED + "Password mismatch" + RESET);
@@ -656,6 +658,8 @@ namespace ProgramPrompts
 
                     Console.WriteLine(GREEN + $"Service: {serviceName}" + RESET);
                     Console.WriteLine(GREEN + $"Password: {EncryptionUtil.DecryptString(encrypted)}\n");
+                    Console.WriteLine(YELLOW + "------------------------\n" + RESET);
+
 
 
                     return true;
@@ -718,8 +722,9 @@ namespace ProgramPrompts
                     // Display Process
                     Console.Write(BLUE + "Permanently Deleting User.." + RESET);
                     Thread.Sleep(200);
-                    Console.Write(RED + "Deleted!" + RESET);
-                    Console.WriteLine();
+                    Console.Write(RED + "Deleted!\n" + RESET);
+                    Console.WriteLine(YELLOW + "------------------------\n" + RESET);
+
 
                     if (isDeleted)
                         return false;
@@ -739,7 +744,7 @@ namespace ProgramPrompts
                     Console.Write(GREEN + "Backup saved!" + RESET + "\n");
                     Thread.Sleep(200);
                     // Console.WriteLine("\n" + YELLOW + $"Location: {Environment.GetEnvironmentVariable("MYSQL_BACKUP_PATH")}" + RESET);
-                    Console.WriteLine(YELLOW + "-------------------------" + RESET);
+                    Console.WriteLine(YELLOW + "-------------------------\n" + RESET);
                     return true;
 
                 }
@@ -791,7 +796,7 @@ namespace ProgramPrompts
                         Console.WriteLine(RED + $"Logging out, \"{username}\" was created after this restore" + RESET);
                         return false;
                     }
-                    Console.WriteLine(YELLOW + "--------------------------" + RESET);
+                    Console.WriteLine(YELLOW + "--------------------------\n" + RESET);
 
                     return true;
 
