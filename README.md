@@ -44,9 +44,9 @@ A secure way to manage passwords on a local machine.
 ---
 
 ### Configure .my.cnf file
--  Go to scripts directory.
+-  Go to the ***scripts*** directory.
 -  Open ***.my.cnf*** file.
--  Paste your key from `keygen` command.
+-  Paste your key from `keygen` command after `Encryption=`.
 -  Enter a database name that will be used later.
 -  Save the file and close it.
 -  Open Powershell where .my.cnf is located.
@@ -60,11 +60,8 @@ cipher /e .\.my.cnf
 
 ### Install MySQL Community 8.0.37 or higher
 - https://dev.mysql.com/downloads/installer/
-- Select Developer Install.
+- Select Full Install
 - Continue to make a root password.
-- Don't install example databases.
-- Uncheck open workbench.
-- Keep shell checked.
 - This should install `mysqlserver` and `mysqlshell`.
 
 ---
@@ -108,12 +105,12 @@ FLUSH PRIVILEGES;
 CREATE DATABASE {your_database_name};
 ```
 
-#### Vefify new database exists : 
+#### Verify new database exists : 
 ```sql
 SHOW DATABASES;
 ```   
 
-#### Vefify new database exists : 
+#### Connect to new database : 
 ```sql
 USE {your_database_name};
 ```   
@@ -156,20 +153,21 @@ SHOW TABLES;
 
 ### Configure .my.cnf :
 - Open ***/scripts/.my.cnf***
-- Edit in your database name
-- Edit in a location for database backups
-  - Preferably in /backups folder
-- Edit where you want to save database backup files
-- Save the file and close it
+- Edit in your database name if you haven't already.
+- Edit in a location for database backups.
+  - Preferably in /backups folder.
+- Edit where you want to save database backup files.
+- Save the file and close it.
 
 --- 
 
 ### Configuration mylogin.cnf :
-- Go to mysql installation files, usually found in: 
+- Go to mysql installation files, usually found in : 
 ```
 C:\Program Files\MySQL\MySQL Server 8.0\bin\
 ```
 - Open Terminal in the bin directory and paste with your database username :
+- Usually found in ***C:\Program Files\MySQL\MySQL Server 8.0\bin***.
 ```shell
 ./mysql_config_editor set --login-path=client --host=localhost --user={your_username} --password
 ```
