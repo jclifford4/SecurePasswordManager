@@ -26,7 +26,9 @@ A secure way to manage passwords on a local machine.
 - ***Hashed + salted*** master passwords are stored for each user. These are needed to **unlock** service passwords.
   - 100k iterations using PBKDF2
   - **PBKDF2** applies a pseudorandom function like HMAC to the input password and applies a salt iteratively.
-  - [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2#:~:text=PBKDF2%20applies%20a%20pseudorandom%20function,cryptographic%20key%20in%20subsequent%20operations target="_blank"), [HMAC](https://en.wikipedia.org/wiki/HMAC target="_blank")
+  - ```markdown
+  [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2#:~:text=PBKDF2%20applies%20a%20pseudorandom%20function,cryptographic%20key%20in%20subsequent%20operations target="_blank"), [HMAC](https://en.wikipedia.org/wiki/HMAC target="_blank")
+  ```
 - ***Encrpted*** service passwords are stored and can only be ***decrypted*** thorugh use of correct user master password.
   - User generates a *32byte* key converted to *base64 string* that acts as the symmetrical key for Encrypting & Decrypting.
   - User can generate a new key if needed, all service passwords that used the old key will need to be updated.
