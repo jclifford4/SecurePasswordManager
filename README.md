@@ -58,7 +58,7 @@ A secure way to manage passwords on a local machine.
 ---
 
 ### Run SPM.exe
-- type `keygen` and copy the genrated hash.
+- type `keygen` and copy the generated hash.
 - type `q` to quit the program.
 
 ---
